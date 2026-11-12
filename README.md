@@ -5,6 +5,7 @@ A verified, version-aware college notice chatbot, frontend prototype with mock d
 ## Run locally
 
 ```bash
+cd frontend
 npm install
 npm run dev
 ```
