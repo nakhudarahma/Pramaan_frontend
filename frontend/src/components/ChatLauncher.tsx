@@ -213,32 +213,34 @@ export default function ChatLauncher({
           </span>
         )}
 
-        {/* Pulse ring */}
-        {!everOpened && (
-          <span
-            aria-hidden="true"
-            className="absolute bottom-0 right-0 h-[60px] w-[60px] rounded-full bg-sky-400/30 chat-pulse-ring"
-          />
-        )}
-
-        {/* The button */}
-        <button
-          onClick={toggle}
-          aria-label={open ? "Close chat" : "Open chat"}
-          aria-expanded={open}
-          className={[
-            "chat-float-btn",
-            open ? "is-open" : "",
-            "relative z-10 h-[60px] w-[60px] flex-shrink-0 rounded-full",
-            "gradient-primary text-white flex items-center justify-center shadow-lg",
-          ].join(" ")}
+        {/* Floating wrapper: button + concentric pulse ring */}
+        <div
+          className={`relative h-[60px] w-[60px] chat-float-btn ${
+            open ? "is-open" : ""
+          }`}
         >
-          {open ? (
-            <X className="h-6 w-6" />
-          ) : (
-            <ChatBubbleCheck className="h-6 w-6" />
+          {/* Concentric pulse ring — perfectly aligned behind the button */}
+          {!everOpened && (
+            <span
+              aria-hidden="true"
+              className="absolute inset-0 rounded-full bg-sky-400/30 chat-pulse-ring pointer-events-none"
+            />
           )}
-        </button>
+
+          {/* The button */}
+          <button
+            onClick={toggle}
+            aria-label={open ? "Close chat" : "Open chat"}
+            aria-expanded={open}
+            className="relative z-10 h-full w-full rounded-full gradient-primary text-white flex items-center justify-center shadow-lg"
+          >
+            {open ? (
+              <X className="h-6 w-6" />
+            ) : (
+              <ChatBubbleCheck className="h-6 w-6" />
+            )}
+          </button>
+        </div>
       </div>
     </>
   );
