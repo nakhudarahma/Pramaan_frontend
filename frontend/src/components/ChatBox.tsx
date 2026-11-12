@@ -47,10 +47,18 @@ function TypingIndicator() {
   );
 }
 
-export default function ChatBox({ onAsk, onSource, initialQuestion, initialNonce }: Props) {
+export default function ChatBox({ onAsk, onSource, initialQuestion, initialNonce, focusRef }: Props) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Wire external focusRef to our input
+  useEffect(() => {
+    if (focusRef) {
+      (focusRef as React.MutableRefObject<HTMLInputElement | null>).current = inputRef.current;
+    }
+  });
 
   useEffect(() => {
     if (initialQuestion && initialNonce) {
@@ -188,9 +196,13 @@ export default function ChatBox({ onAsk, onSource, initialQuestion, initialNonce
         <form onSubmit={handleSubmit} className="flex gap-2">
           <div className="flex-1 relative">
             <input
+              ref={inputRef}
               type="text"
+              inputMode="search"
+              enterKeyHint="send"
               value={input}
               onChange={(e) => setInput(e.target.value)}
+              onFocus={(e) => e.target.scrollIntoView({ block: "nearest", behavior: "smooth" })}
               placeholder="Ask about fees, exams, timetable..."
               className="w-full bg-white dark:bg-night-card border border-slate-200 dark:border-night-border rounded-xl py-3 pl-4 pr-4 text-[15px] text-slate-700 dark:text-night-text placeholder:text-slate-500 dark:placeholder:text-night-muted focus:outline-none focus:border-sky-300 dark:focus:border-sky-500 focus:ring-2 focus:ring-sky-400"
             />
