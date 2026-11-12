@@ -91,13 +91,6 @@ export default function StudentPage() {
         </div>
       </div>
 
-      <footer className="flex-shrink-0 border-t border-slate-100 dark:border-night-border bg-white/90 dark:bg-night-card/90 backdrop-blur">
-        <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-3 px-4 md:px-8 xl:px-12 py-2">
-          <p className="text-[11px] text-slate-500 dark:text-night-muted">
-            Sample data for demo purposes
-          </p>
-        </div>
-      </footer>
 
       {/* Floating chat launcher */}
       <ChatLauncher
