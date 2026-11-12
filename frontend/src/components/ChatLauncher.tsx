@@ -1,7 +1,28 @@
 import { useState, useEffect, useRef } from "react";
-import { MessageCircle, X, Bot, Maximize2, Minimize2 } from "lucide-react";
+import { X, Maximize2, Minimize2 } from "lucide-react";
 import type { AnswerCardData } from "../types";
 import ChatBox from "./ChatBox";
+
+/** Chat bubble with a checkmark — used on the FAB and in the panel header */
+function ChatBubbleCheck({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      {/* Bubble body */}
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+      {/* Checkmark */}
+      <polyline points="9 11 12 14 16 9" />
+    </svg>
+  );
+}
 
 interface Props {
   onAsk: (question: string) => Promise<AnswerCardData>;
@@ -101,7 +122,7 @@ export default function ChatLauncher({
         {/* ── Panel header ─────────────────────────────────────────── */}
         <div className="flex flex-shrink-0 items-center gap-3 border-b border-slate-100 dark:border-night-border px-4 py-3 sm:px-5">
           <div className="w-9 h-9 rounded-xl bg-sky-50 dark:bg-sky-400/10 flex items-center justify-center flex-shrink-0">
-            <Bot className="w-5 h-5 text-sky-500 dark:text-sky-400" />
+            <ChatBubbleCheck className="w-5 h-5 text-sky-500 dark:text-sky-400" />
           </div>
 
           <div className="flex-1 min-w-0">
@@ -179,12 +200,17 @@ export default function ChatLauncher({
           onClick={toggle}
           aria-label={open ? "Close chat" : "Open chat"}
           aria-expanded={open}
-          className="relative z-10 h-[60px] w-[60px] flex-shrink-0 rounded-full gradient-primary text-white flex items-center justify-center shadow-lg"
+          className={[
+            "chat-float-btn",
+            open ? "is-open" : "",
+            "relative z-10 h-[60px] w-[60px] flex-shrink-0 rounded-full",
+            "gradient-primary text-white flex items-center justify-center shadow-lg",
+          ].join(" ")}
         >
           {open ? (
             <X className="h-6 w-6" />
           ) : (
-            <MessageCircle className="h-6 w-6" />
+            <ChatBubbleCheck className="h-6 w-6" />
           )}
         </button>
       </div>

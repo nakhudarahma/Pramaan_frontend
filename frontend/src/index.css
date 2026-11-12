@@ -133,6 +133,25 @@ body {
   }
 }
 
+/* Chat launcher FAB — gentle float */
+@keyframes chatFloat {
+  0%,  100% { transform: translateY(0);   }
+  50%        { transform: translateY(-8px); }
+}
+.chat-float-btn {
+  animation: chatFloat 3s ease-in-out infinite;
+}
+/* Pause when hovered or when the chat is open (.is-open set via JS) */
+.chat-float-btn:hover,
+.chat-float-btn.is-open {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .chat-float-btn {
+    animation: none;
+  }
+}
+
 /* Skeleton shimmer */
 @keyframes shimmer {
   0% { background-position: -468px 0; }
