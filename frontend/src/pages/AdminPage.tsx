@@ -219,7 +219,7 @@ export default function AdminPage() {
             Admin Portal
           </h1>
           <p className="text-sm text-slate-500 dark:text-night-muted leading-relaxed mb-6">
-            Demo access — no password needed. Upload notices and verify extracted facts.
+            Demo access. No password needed. Upload notices and verify extracted facts.
           </p>
 
           <ul className="space-y-2.5 text-left mb-7">
