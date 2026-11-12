@@ -57,7 +57,7 @@ export default function StudentPage() {
   };
 
   return (
-    <div className="flex h-[calc(100dvh_-_7.5rem_-_env(safe-area-inset-bottom))] flex-col overflow-hidden lg:h-[calc(100dvh_-_3.5rem_-_1px)]">
+    <div className="flex h-[calc(100dvh_-_7.5rem_-_env(safe-area-inset-bottom))] flex-col overflow-hidden md:h-[calc(100dvh_-_3.5rem_-_1px)]">
       <ContextBar
         course={course}
         semester={semester}

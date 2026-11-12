@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import { X, Maximize2, Minimize2 } from "lucide-react";
 import type { AnswerCardData } from "../types";
 import ChatBox from "./ChatBox";
@@ -37,6 +38,7 @@ export default function ChatLauncher({
   initialQuestion,
   initialNonce,
 }: Props) {
+  const location = useLocation();
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
   // Hide the label once the chat has been opened at least once
@@ -58,6 +60,30 @@ export default function ChatLauncher({
       openChat();
     }
   };
+
+  // If path is /ask, open automatically
+  useEffect(() => {
+    if (location.pathname === "/ask") {
+      openChat();
+    }
+  }, [location.pathname]);
+
+  // Listen to open-chat and toggle-chat custom events from BottomNav or elsewhere
+  useEffect(() => {
+    const handleOpen = () => openChat();
+    const handleToggle = () => toggle();
+    window.addEventListener("pramaan:open-chat", handleOpen);
+    window.addEventListener("pramaan:toggle-chat", handleToggle);
+    return () => {
+      window.removeEventListener("pramaan:open-chat", handleOpen);
+      window.removeEventListener("pramaan:toggle-chat", handleToggle);
+    };
+  }, [open]);
+
+  // Broadcast chat state so BottomNav knows when chat is open
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("pramaan:chat-state", { detail: { open } }));
+  }, [open]);
 
   // If a pending question arrives from IntentTiles, open the chat automatically
   useEffect(() => {
@@ -174,9 +200,9 @@ export default function ChatLauncher({
         </div>
       </div>
 
-      {/* ── Launcher button + label ───────────────────────────────────── */}
+      {/* ── Launcher button + label (desktop only) ──────────────────── */}
       {/* z-[36]: just above chat panel (z-[35]), below SourceDrawer overlay (z-40) */}
-      <div className="fixed bottom-6 right-6 z-[36] flex flex-col items-center gap-2">
+      <div className="hidden md:flex fixed bottom-6 right-6 z-[36] flex-col items-center gap-2">
         {/* "Have a question?" label — hidden after first open */}
         {!everOpened && (
           <span

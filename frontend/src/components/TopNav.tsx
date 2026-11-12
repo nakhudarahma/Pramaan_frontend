@@ -4,6 +4,7 @@ import { useTheme } from "../useTheme";
 
 export default function TopNav() {
   const location = useLocation();
+  const isNotices = location.pathname === "/notices";
   const isAdmin = location.pathname === "/admin";
   const { theme, toggleTheme } = useTheme();
 
@@ -26,10 +27,20 @@ export default function TopNav() {
         </Link>
         <div className="flex items-center gap-1 flex-shrink-0">
           <Link
+            to="/notices"
+            className={`text-xs font-medium px-3 py-1.5 rounded-lg transition-colors ${
+              isNotices
+                ? "bg-white/10 text-accent font-semibold"
+                : "text-sky-100/80 hover:text-white hover:bg-white/10"
+            }`}
+          >
+            Notices
+          </Link>
+          <Link
             to="/admin"
             className={`text-xs font-medium px-3 py-1.5 rounded-lg transition-colors ${
               isAdmin
-                ? "bg-white/10 text-accent"
+                ? "bg-white/10 text-accent font-semibold"
                 : "text-sky-100/80 hover:text-white hover:bg-white/10"
             }`}
           >

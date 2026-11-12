@@ -61,7 +61,7 @@ export default function NoticeList() {
   }, [notices, search, category]);
 
   return (
-    <div className="max-w-[1600px] mx-auto px-4 md:px-8 xl:px-12 py-6 pb-24 lg:pb-8">
+    <div className="max-w-[1600px] mx-auto px-4 md:px-8 xl:px-12 py-6 pb-24 md:pb-8">
       <div className="flex items-center gap-2 mb-5">
         <FileText className="w-5 h-5 text-sky-500 dark:text-sky-400" />
         <h1 className="text-2xl font-bold text-slate-900 dark:text-night-text">Notices</h1>
