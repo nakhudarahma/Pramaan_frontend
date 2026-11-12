@@ -10,7 +10,6 @@ import ChangeFeed from "../components/ChangeFeed";
 import IntentTiles from "../components/IntentTiles";
 import ChatBox from "../components/ChatBox";
 import SourceDrawer from "../components/SourceDrawer";
-import { resetDemo } from "../api";
 
 export default function StudentPage() {
   const location = useLocation();
@@ -61,12 +60,6 @@ export default function StudentPage() {
     setPendingQuestion({ q: question, n: Date.now() });
   };
 
-  const handleReset = () => {
-    resetDemo();
-    localStorage.removeItem("pramaan-context");
-    window.location.reload();
-  };
-
   return (
     <div className="flex h-[calc(100dvh_-_7.5rem_-_env(safe-area-inset-bottom))] flex-col overflow-hidden lg:h-[calc(100dvh_-_3.5rem_-_1px)]">
       <ContextBar
@@ -77,10 +70,10 @@ export default function StudentPage() {
       />
 
       <div className="flex-1 min-h-0">
-        <div className="mx-auto flex h-full max-w-5xl flex-col px-4 py-4">
+        <div className="mx-auto flex h-full max-w-[1600px] flex-col px-4 md:px-8 xl:px-12 py-4">
           <div className={`mb-4 flex-shrink-0 ${isAskView ? "hidden lg:block" : ""}`}>
             <p className="text-base font-semibold text-navy-700 dark:text-night-text">
-              Hi! Ask anything about your college notices.
+              What do you want to know today?
             </p>
             <span className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-white dark:bg-night-card border border-slate-200 dark:border-night-border px-3 py-1 text-xs font-medium text-slate-500 dark:text-night-muted shadow-sm">
               <span className="w-1.5 h-1.5 rounded-full bg-sky-500" />
@@ -88,7 +81,7 @@ export default function StudentPage() {
             </span>
           </div>
 
-          <div className="grid flex-1 min-h-0 grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(380px,440px)]">
+          <div className="grid flex-1 min-h-0 grid-cols-1 gap-5 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
             <div
               className={`${isAskView ? "hidden lg:flex" : "flex"} min-h-0 flex-col gap-4 overflow-y-auto thin-scrollbar pr-1 lg:overflow-visible lg:pr-0`}
             >
@@ -135,16 +128,10 @@ export default function StudentPage() {
       </div>
 
       <footer className="flex-shrink-0 border-t border-slate-100 dark:border-night-border bg-white/90 dark:bg-night-card/90 backdrop-blur">
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-2">
+        <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-3 px-4 md:px-8 xl:px-12 py-2">
           <p className="text-[11px] text-slate-500 dark:text-night-muted">
             Sample data for demo purposes
           </p>
-          <button
-            onClick={handleReset}
-            className="text-xs text-slate-500 dark:text-night-muted hover:text-rose-500 dark:hover:text-rose-400 font-medium transition-colors active:scale-95"
-          >
-            Reset demo
-          </button>
         </div>
       </footer>
 

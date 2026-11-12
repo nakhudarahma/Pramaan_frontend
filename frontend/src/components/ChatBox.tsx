@@ -17,7 +17,35 @@ interface Props {
   initialNonce?: number;
 }
 
-const SUGGESTIONS = ["Late fee?", "Exam form last date?", "Re-exam date?", "Hostel fee?", "Lab exam time?"];
+const SUGGESTIONS = [
+  { label: "What's the late fee?", question: "What's the late fee?" },
+  { label: "When's the exam form due?", question: "When's the exam form due?" },
+  { label: "Re-exam kab hai?", question: "Re-exam date?" },
+];
+
+const MIN_TYPING_MS = 600;
+const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+function TypingIndicator() {
+  return (
+    <div
+      role="status"
+      aria-label="Typing…"
+      className="inline-flex items-center gap-2.5 rounded-2xl border border-slate-100 dark:border-night-border bg-white dark:bg-night-card shadow-card px-4 py-3 animate-answer-in"
+    >
+      <span className="text-xs font-medium text-slate-500 dark:text-night-muted">typing</span>
+      <span className="flex items-center gap-1">
+        {[0, 1, 2].map((i) => (
+          <span
+            key={i}
+            className="typing-dot w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-night-muted"
+            style={{ animationDelay: `${i * 0.15}s` }}
+          />
+        ))}
+      </span>
+    </div>
+  );
+}
 
 export default function ChatBox({ onAsk, onSource, initialQuestion, initialNonce }: Props) {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -45,12 +73,20 @@ export default function ChatBox({ onAsk, onSource, initialQuestion, initialNonce
     ]);
     setInput("");
 
+    const startedAt = Date.now();
+    const finishTyping = async () => {
+      const remaining = MIN_TYPING_MS - (Date.now() - startedAt);
+      if (remaining > 0) await wait(remaining);
+    };
+
     try {
       const answer = await onAsk(question);
+      await finishTyping();
       setMessages((prev) =>
         prev.map((m) => (m.id === msgId ? { ...m, answer, loading: false } : m))
       );
     } catch {
+      await finishTyping();
       setMessages((prev) =>
         prev.map((m) => ({
           ...m,
@@ -111,17 +147,7 @@ export default function ChatBox({ onAsk, onSource, initialQuestion, initialNonce
               )}
               {m.loading && (
                 <div className="flex justify-start">
-                  <AnswerCard
-                    data={{
-                      state: "unavailable",
-                      text: "",
-                      appliesTo: "",
-                      validUntil: "",
-                      sources: [],
-                    }}
-                    loading
-                    onSource={onSource}
-                  />
+                  <TypingIndicator />
                 </div>
               )}
             </div>
@@ -145,11 +171,11 @@ export default function ChatBox({ onAsk, onSource, initialQuestion, initialNonce
             <div className="flex flex-wrap justify-center gap-2 mt-4">
               {SUGGESTIONS.map((s) => (
                 <button
-                  key={s}
-                  onClick={() => handleAsk(s)}
+                  key={s.label}
+                  onClick={() => handleAsk(s.question)}
                   className="bg-white dark:bg-night-card border border-slate-200 dark:border-night-border hover:border-sky-300 dark:hover:border-sky-500 text-slate-700 dark:text-night-text hover:text-sky-600 dark:hover:text-sky-300 text-[13px] font-medium px-3.5 py-2 rounded-xl transition-all hover:-translate-y-0.5 hover:shadow-sm active:scale-95"
                 >
-                  {s}
+                  {s.label}
                 </button>
               ))}
             </div>
@@ -172,7 +198,7 @@ export default function ChatBox({ onAsk, onSource, initialQuestion, initialNonce
           <button
             type="submit"
             disabled={!input.trim()}
-            className="w-12 h-12 flex-shrink-0 bg-navy-600 hover:bg-navy-700 disabled:bg-slate-300 dark:disabled:bg-slate-600 text-white disabled:text-slate-600 dark:disabled:text-slate-300 rounded-xl flex items-center justify-center transition-all hover:-translate-y-0.5 active:scale-95 disabled:hover:translate-y-0"
+            className="gradient-primary w-12 h-12 flex-shrink-0 bg-navy-600 disabled:bg-slate-300 dark:disabled:bg-slate-600 text-white disabled:text-slate-600 dark:disabled:text-slate-300 rounded-xl flex items-center justify-center transition-all hover:-translate-y-0.5 hover:brightness-110 active:scale-95 disabled:hover:translate-y-0 disabled:hover:brightness-100"
           >
             <Send className="w-5 h-5" />
           </button>

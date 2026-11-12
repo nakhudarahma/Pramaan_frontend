@@ -47,6 +47,7 @@ export default {
         'slide-up': 'slideUp 0.3s ease-out',
         'slide-in-right': 'slideInRight 0.3s ease-out',
         'pulse-soft': 'pulseSoft 1.5s ease-in-out infinite',
+        'answer-in': 'answerIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1)',
       },
       keyframes: {
         fadeIn: {
@@ -56,6 +57,11 @@ export default {
         slideUp: {
           '0%': { transform: 'translateY(20px)', opacity: '0' },
           '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        answerIn: {
+          '0%': { transform: 'translateY(14px) scale(0.98)', opacity: '0' },
+          '60%': { transform: 'translateY(-4px) scale(1.01)', opacity: '1' },
+          '100%': { transform: 'translateY(0) scale(1)', opacity: '1' },
         },
         slideInRight: {
           '0%': { transform: 'translateX(100%)' },

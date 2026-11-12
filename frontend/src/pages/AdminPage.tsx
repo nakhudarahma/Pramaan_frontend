@@ -3,7 +3,6 @@ import {
   ShieldCheck,
   ArrowLeft,
   Send,
-  RotateCcw,
   FileText,
   ClipboardCheck,
   AlertTriangle,
@@ -14,6 +13,7 @@ import UploadZone from "../components/UploadZone";
 import ReviewTable from "../components/ReviewTable";
 import UnansweredList from "../components/UnansweredList";
 import Toast, { LoadingToast } from "../components/Toast";
+import { celebratePublish } from "../celebrate";
 import {
   uploadNotice,
   getUnanswered,
@@ -23,7 +23,6 @@ import {
   rejectFact,
   editFact,
   publishFacts,
-  resetDemo,
 } from "../api";
 import type { FactRow, UnansweredItem } from "../types";
 
@@ -107,11 +106,10 @@ export default function AdminPage() {
   const handlePublish = async () => {
     if (approvedIds.length === 0) return;
     setLoadingToast("Publishing...");
-    const result = await publishFacts(approvedIds);
+    await publishFacts(approvedIds);
     setLoadingToast(null);
-    setToast(
-      `${result.count} fact${result.count > 1 ? "s" : ""} published. Affected students notified: ${result.affected}.`
-    );
+    setToast("Published. Students notified.");
+    celebratePublish();
     setApprovedIds([]);
     setStage("upload");
   };
@@ -120,16 +118,11 @@ export default function AdminPage() {
     setToast("Fact drafting opened (demo).");
   };
 
-  const handleReset = () => {
-    resetDemo();
-    window.location.reload();
-  };
-
   // ---------- Login screen ----------
   if (stage === "login") {
     return (
-      <div className="max-w-lg mx-auto px-4 py-10 md:py-16 min-h-[75vh] flex items-center justify-center">
-        <div className="w-full bg-white dark:bg-night-card border border-slate-200 dark:border-night-border rounded-3xl shadow-card p-6 sm:p-8 text-center">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-8 xl:px-12 py-10 md:py-16 min-h-[75vh] flex items-center justify-center">
+        <div className="w-full max-w-lg mx-auto bg-white dark:bg-night-card border border-slate-200 dark:border-night-border rounded-3xl shadow-card p-6 sm:p-8 text-center">
           <div className="w-16 h-16 rounded-3xl bg-navy-600 flex items-center justify-center mb-5 mx-auto shadow-lg">
             <ShieldCheck className="w-8 h-8 text-white" strokeWidth={2.5} />
           </div>
@@ -160,16 +153,9 @@ export default function AdminPage() {
 
           <button
             onClick={() => setStage("upload")}
-            className="w-full bg-navy-600 hover:bg-navy-700 text-white font-semibold py-4 rounded-2xl shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl active:scale-[0.98]"
+            className="gradient-primary w-full bg-navy-600 text-white font-semibold py-4 rounded-2xl shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl hover:brightness-110 active:scale-[0.98]"
           >
             Continue as Admin
-          </button>
-          <button
-            onClick={handleReset}
-            className="mt-5 mx-auto text-xs text-slate-500 dark:text-night-muted hover:text-rose-500 dark:hover:text-rose-400 font-medium flex items-center gap-1.5 transition-colors active:scale-95"
-          >
-            <RotateCcw className="w-3 h-3" />
-            Reset demo data
           </button>
         </div>
       </div>
@@ -179,7 +165,7 @@ export default function AdminPage() {
   // ---------- Upload screen ----------
   if (stage === "upload") {
     return (
-      <div className="max-w-2xl mx-auto px-4 py-6 pb-24 lg:pb-6">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-8 xl:px-12 py-6 pb-24 lg:pb-6">
         <div className="flex items-center gap-2 mb-6">
           <button
             onClick={() => setStage("login")}
@@ -198,22 +184,15 @@ export default function AdminPage() {
           <UnansweredList items={unanswered} onWriteFact={handleWriteFact} />
         </div>
 
-        <div className="mt-6 pt-4 border-t border-slate-100 dark:border-night-border">
-          <button
-            onClick={handleReset}
-            className="text-xs text-slate-500 dark:text-night-muted hover:text-rose-500 dark:hover:text-rose-400 font-medium flex items-center gap-1.5 transition-colors active:scale-95"
-          >
-            <RotateCcw className="w-3 h-3" />
-            Reset demo data
-          </button>
-        </div>
+        {toast && <Toast message={toast} onDone={() => setToast(null)} />}
+        {loadingToast && <LoadingToast message={loadingToast} />}
       </div>
     );
   }
 
   // ---------- Review screen ----------
   return (
-    <div className="max-w-5xl mx-auto px-4 py-4 pb-24 lg:pb-6">
+    <div className="max-w-[1600px] mx-auto px-4 md:px-8 xl:px-12 py-4 pb-24 lg:pb-6">
       <div className="flex items-center gap-2 mb-6">
         <button
           onClick={() => setStage("upload")}
@@ -274,7 +253,7 @@ export default function AdminPage() {
             <div className="mt-6 sticky bottom-4">
               <button
                 onClick={handlePublish}
-                className="w-full flex items-center justify-center gap-2 bg-navy-600 hover:bg-navy-700 text-white font-semibold py-4 rounded-2xl shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl active:scale-[0.98]"
+                className="gradient-primary w-full flex items-center justify-center gap-2 bg-navy-600 text-white font-semibold py-4 rounded-2xl shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl hover:brightness-110 active:scale-[0.98]"
               >
                 <Send className="w-4 h-4" />
                 Publish approved facts ({approvedIds.length})

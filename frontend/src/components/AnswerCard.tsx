@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ShieldCheck,
   AlertTriangle,
@@ -12,8 +12,12 @@ import {
   Copy,
   Share2,
   Check,
+  ThumbsUp,
+  ThumbsDown,
 } from "lucide-react";
 import type { AnswerCardData } from "../types";
+import Toast from "./Toast";
+import { celebrateVerified } from "../celebrate";
 
 interface Props {
   data: AnswerCardData;
@@ -21,8 +25,18 @@ interface Props {
   onSource: (factId: string, notice: string, page: number) => void;
 }
 
+let hasCelebratedVerified = false;
+
 export default function AnswerCard({ data, loading, onSource }: Props) {
   const [copied, setCopied] = useState(false);
+  const [reaction, setReaction] = useState<"up" | "down" | null>(null);
+  const [showCopiedToast, setShowCopiedToast] = useState(false);
+
+  useEffect(() => {
+    if (data.state !== "verified" || hasCelebratedVerified) return;
+    hasCelebratedVerified = true;
+    celebrateVerified();
+  }, [data.state]);
 
   const shareText = `${data.text}${data.appliesTo ? ` — ${data.appliesTo}` : ""}`;
 
@@ -30,6 +44,7 @@ export default function AnswerCard({ data, loading, onSource }: Props) {
     try {
       await navigator.clipboard.writeText(shareText);
       setCopied(true);
+      setShowCopiedToast(true);
       setTimeout(() => setCopied(false), 1500);
     } catch {
       /* clipboard unavailable */
@@ -104,7 +119,7 @@ export default function AnswerCard({ data, loading, onSource }: Props) {
 
   return (
     <div
-      className={`bg-white dark:bg-night-card rounded-2xl border ${c.border} shadow-card p-5 w-full animate-slide-up`}
+      className={`bg-white dark:bg-night-card rounded-2xl border ${c.border} shadow-card p-5 w-full animate-answer-in`}
     >
       {/* Badge */}
       <div
@@ -126,23 +141,25 @@ export default function AnswerCard({ data, loading, onSource }: Props) {
       )}
 
       {/* Notice metadata */}
-      <div className="grid grid-cols-2 gap-x-4 gap-y-2 mb-3">
-        {[
-          { label: "Issued by", value: data.issuedBy || "—" },
-          { label: "Notice no.", value: data.noticeNumber || "—" },
-          { label: "Notice date", value: data.noticeDate || "—" },
-          { label: "Category", value: data.category || "General" },
-        ].map((meta) => (
-          <div key={meta.label} className="min-w-0">
-            <div className="text-[11px] uppercase tracking-wide text-slate-500 dark:text-night-muted">
-              {meta.label}
+      {data.state !== "unavailable" && (
+        <div className="grid grid-cols-2 gap-x-4 gap-y-2 mb-3">
+          {[
+            { label: "Issued by", value: data.issuedBy || "—" },
+            { label: "Notice no.", value: data.noticeNumber || "—" },
+            { label: "Notice date", value: data.noticeDate || "—" },
+            { label: "Category", value: data.category || "General" },
+          ].map((meta) => (
+            <div key={meta.label} className="min-w-0">
+              <div className="text-[11px] uppercase tracking-wide text-slate-500 dark:text-night-muted">
+                {meta.label}
+              </div>
+              <div className="text-[13px] font-medium text-slate-700 dark:text-night-text truncate">
+                {meta.value}
+              </div>
             </div>
-            <div className="text-[13px] font-medium text-slate-700 dark:text-night-text truncate">
-              {meta.value}
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* Outdated banner */}
       {data.state === "outdated" && (
@@ -236,6 +253,32 @@ export default function AnswerCard({ data, loading, onSource }: Props) {
       {/* Actions */}
       <div className="flex items-center gap-2 mt-3 pt-3 border-t border-slate-100 dark:border-night-border">
         <button
+          onClick={() => setReaction((r) => (r === "up" ? null : "up"))}
+          aria-label="Helpful"
+          aria-pressed={reaction === "up"}
+          title="Helpful"
+          className={`inline-flex items-center justify-center w-8 h-8 rounded-lg transition-all hover:-translate-y-0.5 active:scale-95 ${
+            reaction === "up"
+              ? "bg-green-50 dark:bg-green-500/15 ring-2 ring-green-300 dark:ring-green-500/40 text-green-600 dark:text-green-400"
+              : "bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-500 dark:text-night-muted"
+          }`}
+        >
+          <ThumbsUp className="w-4 h-4" />
+        </button>
+        <button
+          onClick={() => setReaction((r) => (r === "down" ? null : "down"))}
+          aria-label="Not helpful"
+          aria-pressed={reaction === "down"}
+          title="Not helpful"
+          className={`inline-flex items-center justify-center w-8 h-8 rounded-lg transition-all hover:-translate-y-0.5 active:scale-95 ${
+            reaction === "down"
+              ? "bg-rose-50 dark:bg-rose-500/15 ring-2 ring-rose-300 dark:ring-rose-500/40 text-rose-600 dark:text-rose-400"
+              : "bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-500 dark:text-night-muted"
+          }`}
+        >
+          <ThumbsDown className="w-4 h-4" />
+        </button>
+        <button
           onClick={handleCopy}
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 dark:text-night-muted hover:text-navy-600 dark:hover:text-sky-300 bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 px-3 py-2 rounded-lg transition-all hover:-translate-y-0.5 active:scale-95"
         >
@@ -254,6 +297,14 @@ export default function AnswerCard({ data, loading, onSource }: Props) {
           Share
         </button>
       </div>
+
+      {showCopiedToast && (
+        <Toast
+          message="Copied"
+          duration={1800}
+          onDone={() => setShowCopiedToast(false)}
+        />
+      )}
     </div>
   );
 }

@@ -4,9 +4,10 @@ import { CheckCircle2, X, Loader2 } from "lucide-react";
 interface Props {
   message: string;
   onDone?: () => void;
+  duration?: number;
 }
 
-export default function Toast({ message, onDone }: Props) {
+export default function Toast({ message, onDone, duration = 4000 }: Props) {
   const [visible, setVisible] = useState(true);
 
   const dismiss = useCallback(() => {
@@ -15,9 +16,9 @@ export default function Toast({ message, onDone }: Props) {
   }, [onDone]);
 
   useEffect(() => {
-    const timer = setTimeout(dismiss, 4000);
+    const timer = setTimeout(dismiss, duration);
     return () => clearTimeout(timer);
-  }, [dismiss]);
+  }, [dismiss, duration]);
 
   if (!visible) return null;
 
