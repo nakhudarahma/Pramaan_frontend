@@ -25,7 +25,7 @@ const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 // ---------- localStorage persistence ----------
 
-const STORAGE_KEY = "pramaan-demo-state-v3";
+const STORAGE_KEY = "pramaan-demo-state-v4";
 
 interface PersistedState {
   facts: typeof seedFacts;
@@ -313,6 +313,24 @@ export async function approveFact(id: string): Promise<FactRow[]> {
         approved: true,
       });
     }
+
+    if (row.factKey.toLowerCase().includes("exam form")) {
+      state.facts.examForm = {
+        ...state.facts.examForm,
+        value: row.value,
+        replaces: "Notice 05 Nov (25 Nov 2026)",
+        validUntil: "30 Nov 2026",
+      };
+    }
+
+    if (row.factKey.toLowerCase().includes("lab")) {
+      row.conflict = undefined;
+      state.facts.labExam = {
+        ...state.facts.labExam,
+        value: row.value,
+        replaces: "Notice 08 Nov (9:00 AM – 12:00 PM)",
+      };
+    }
   }
   saveState(state);
   return state.factRows.filter((r) => r.status === "pending");
@@ -394,4 +412,103 @@ export function courseLabel(id: CourseId): string {
     ba: "BA",
   };
   return map[id];
+}
+
+export async function resolveConflictNotice(
+  factRowId: string,
+  winningNoticeNumber: string
+): Promise<FactRow[]> {
+  if (!USE_MOCK) {
+    const res = await fetch(`/api/facts/${factRowId}/resolve`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ winningNoticeNumber }),
+    });
+    return res.json();
+  }
+  await delay(300);
+  const state = loadState();
+  const row = state.factRows.find((r) => r.id === factRowId);
+  if (row) {
+    row.conflict = undefined;
+    if (winningNoticeNumber.includes("19")) {
+      row.value = "2:00 PM – 5:00 PM";
+      row.status = "approved";
+      state.facts.labExam = {
+        ...state.facts.labExam,
+        value: "2:00 PM – 5:00 PM",
+        validUntil: "30 Nov 2026",
+        replaces: "Notice 08 Nov (9:00 AM – 12:00 PM)",
+        sources: [{ factId: "f-labexam-b", notice: "Notice 11 Nov", page: 1 }],
+      };
+    } else {
+      row.value = "9:00 AM – 12:00 PM";
+      row.status = "rejected";
+      state.facts.labExam = {
+        ...state.facts.labExam,
+        value: "9:00 AM – 12:00 PM",
+        validUntil: "30 Nov 2026",
+        sources: [{ factId: "f-labexam-a", notice: "Notice 08 Nov", page: 3 }],
+      };
+    }
+  }
+  saveState(state);
+  return state.factRows.filter((r) => r.status === "pending");
+}
+
+export async function saveCustomFact({
+  question,
+  answerValue,
+  course,
+  semester,
+  validUntil,
+}: {
+  question: string;
+  answerValue: string;
+  course: CourseId;
+  semester: Semester;
+  validUntil?: string;
+}): Promise<UnansweredItem[]> {
+  if (!USE_MOCK) {
+    const res = await fetch("/api/facts/custom", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question, answerValue, course, semester, validUntil }),
+    });
+    return res.json();
+  }
+  await delay(300);
+  const state = loadState();
+  const factId = `f-custom-${Date.now()}`;
+  const key = `custom_${Date.now()}`;
+
+  // Generate keywords from question so student chat matches it
+  const cleanQ = question.toLowerCase().replace(/[^a-z0-9\s-]/g, " ").trim();
+  const words = cleanQ.split(/\s+/).filter((w) => w.length > 1);
+  const keywords = Array.from(new Set([cleanQ, question.toLowerCase().trim(), ...words]));
+
+  if (cleanQ.includes("re") && cleanQ.includes("exam")) {
+    keywords.push("re-exam", "reexam", "re exam", "re-exam date", "re-exam kab hai");
+  }
+  if (cleanQ.includes("hostel") || cleanQ.includes("gate")) {
+    keywords.push("hostel gate", "gate timing", "hostel timing", "curfew", "in time");
+  }
+
+  state.facts[key] = {
+    factId,
+    key: cleanQ,
+    value: answerValue,
+    appliesTo: `${courseLabel(course)}, Sem ${semester}`,
+    validUntil: validUntil || "31 Dec 2026",
+    sources: [{ factId, notice: "Notice 12 Nov", page: 1 }],
+    keywords,
+    scope: { course, semester },
+  };
+
+  state.unanswered = state.unanswered.filter(
+    (u) => u.question.toLowerCase().trim() !== question.toLowerCase().trim()
+  );
+
+  saveState(state);
+  return state.unanswered;
 }

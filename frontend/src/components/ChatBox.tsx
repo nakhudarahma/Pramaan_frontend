@@ -15,6 +15,7 @@ interface Props {
   onSource: (factId: string, notice: string, page: number) => void;
   initialQuestion?: string | null;
   initialNonce?: number;
+  focusRef?: React.RefObject<HTMLInputElement | null>;
 }
 
 const SUGGESTIONS = [

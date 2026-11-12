@@ -384,6 +384,16 @@ export const seedFactRows: FactRow[] = [
     noticeId: "n12",
   },
   {
+    id: "fr3",
+    factKey: "Exam form deadline",
+    value: "30 Nov 2026",
+    oldValue: "25 Nov 2026",
+    scope: { course: "bsc-ds", semester: 4 },
+    replaces: "Notice 05 Nov",
+    status: "pending",
+    noticeId: "n25",
+  },
+  {
     id: "fr2",
     factKey: "Lab exam time",
     value: "2:00 PM – 5:00 PM",
@@ -391,7 +401,7 @@ export const seedFactRows: FactRow[] = [
     scope: { course: "bsc-ds", semester: 4 },
     replaces: "Notice 08 Nov",
     status: "pending",
-    conflict: "Conflict with notice #18",
+    conflict: "Conflict with notice #19",
     noticeId: "n19",
   },
 ];
