@@ -14,11 +14,11 @@ export default function DeadlineStrip({ deadlines, loading }: Props) {
           <CalendarClock className="w-4 h-4 text-sky-500 dark:text-sky-400" />
           <span className="text-sm font-bold uppercase tracking-wide text-slate-700 dark:text-night-text">Next deadlines</span>
         </div>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="flex gap-2.5 overflow-x-auto no-scrollbar pb-1 sm:grid sm:grid-cols-3 sm:gap-3">
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="h-full min-w-0 bg-white dark:bg-night-card rounded-2xl border border-slate-100 dark:border-night-border shadow-card p-3 xl:p-5"
+              className="h-full min-w-[140px] flex-1 sm:min-w-0 bg-white dark:bg-night-card rounded-2xl border border-slate-100 dark:border-night-border shadow-card p-3 xl:p-5"
             >
               <div className="flex items-center gap-2 mb-2">
                 <div className="skeleton w-8 h-8 rounded-lg" />
@@ -49,7 +49,7 @@ export default function DeadlineStrip({ deadlines, loading }: Props) {
           Next deadlines
         </h2>
       </div>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="flex gap-2.5 overflow-x-auto no-scrollbar pb-1 sm:grid sm:grid-cols-3 sm:gap-3">
         {deadlines.map((d) => {
           const countdownTone =
             d.daysLeft < 7
@@ -61,7 +61,7 @@ export default function DeadlineStrip({ deadlines, loading }: Props) {
           return (
             <div
               key={d.id}
-              className="flex h-full min-w-0 flex-col bg-white dark:bg-night-card rounded-2xl border border-slate-100 dark:border-night-border shadow-card p-3 xl:p-5 hover:shadow-md hover:-translate-y-0.5 transition-all"
+              className="flex h-full min-w-[140px] flex-1 sm:min-w-0 flex-col bg-white dark:bg-night-card rounded-2xl border border-slate-100 dark:border-night-border shadow-card p-3 xl:p-5 hover:shadow-md hover:-translate-y-0.5 transition-all"
             >
               <div className="flex items-center gap-1.5 xl:gap-2 mb-2">
                 <div className="w-7 h-7 xl:w-9 xl:h-9 rounded-lg xl:rounded-xl bg-sky-50 dark:bg-sky-400/10 flex items-center justify-center flex-shrink-0">

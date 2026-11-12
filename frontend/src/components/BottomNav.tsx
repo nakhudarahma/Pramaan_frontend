@@ -35,7 +35,7 @@ export default function BottomNav() {
       <div className="flex items-center justify-around h-16">
         <Link
           to="/"
-          className={`flex flex-col items-center gap-1 px-6 py-1.5 rounded-xl transition-all hover:-translate-y-0.5 active:scale-95 ${
+          className={`flex-1 max-w-[120px] flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl transition-all hover:-translate-y-0.5 active:scale-95 ${
             isHome ? "text-sky-500 dark:text-sky-400" : "text-slate-500 dark:text-night-muted"
           }`}
         >
@@ -47,7 +47,7 @@ export default function BottomNav() {
           type="button"
           onClick={handleAskClick}
           aria-label="Ask a question"
-          className={`flex flex-col items-center gap-1 px-6 py-1.5 rounded-xl transition-all hover:-translate-y-0.5 active:scale-95 ${
+          className={`flex-1 max-w-[120px] flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl transition-all hover:-translate-y-0.5 active:scale-95 ${
             isAsk ? "text-sky-500 dark:text-sky-400" : "text-slate-500 dark:text-night-muted"
           }`}
         >
@@ -57,7 +57,7 @@ export default function BottomNav() {
 
         <Link
           to="/notices"
-          className={`flex flex-col items-center gap-1 px-6 py-1.5 rounded-xl transition-all hover:-translate-y-0.5 active:scale-95 ${
+          className={`flex-1 max-w-[120px] flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl transition-all hover:-translate-y-0.5 active:scale-95 ${
             isNotices ? "text-sky-500 dark:text-sky-400" : "text-slate-500 dark:text-night-muted"
           }`}
         >

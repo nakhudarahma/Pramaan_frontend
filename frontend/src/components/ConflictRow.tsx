@@ -16,7 +16,7 @@ export default function ConflictRow({ row, onResolve }: Props) {
           {row.conflict}
         </span>
       </div>
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             <div className="text-sm font-semibold text-slate-800 dark:text-night-text">
@@ -33,7 +33,7 @@ export default function ConflictRow({ row, onResolve }: Props) {
         </div>
         <button
           onClick={() => onResolve(row.id)}
-          className="flex items-center gap-1 text-xs font-semibold text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-500/20 hover:bg-amber-200 dark:hover:bg-amber-500/30 px-3 py-2 rounded-lg transition-all hover:-translate-y-0.5 active:scale-95 whitespace-nowrap"
+          className="self-start sm:self-auto flex items-center gap-1 text-xs font-semibold text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-500/20 hover:bg-amber-200 dark:hover:bg-amber-500/30 px-3 py-2 rounded-lg transition-all hover:-translate-y-0.5 active:scale-95 whitespace-nowrap"
         >
           Resolve
           <ChevronRight className="w-3.5 h-3.5" />

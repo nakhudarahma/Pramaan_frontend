@@ -38,7 +38,7 @@ export default function UploadZone({ onUpload, extracting }: Props) {
       onDragLeave={() => setDragOver(false)}
       onDrop={handleDrop}
       onClick={() => !extracting && inputRef.current?.click()}
-      className={`relative border-2 border-dashed rounded-3xl p-12 text-center cursor-pointer transition-all ${
+      className={`relative border-2 border-dashed rounded-3xl p-6 sm:p-12 text-center cursor-pointer transition-all ${
         dragOver
           ? "border-navy-600 dark:border-sky-400 bg-sky-50 dark:bg-sky-400/10 scale-[1.01]"
           : "border-slate-200 dark:border-night-border bg-slate-50 dark:bg-night-card hover:border-sky-300 dark:hover:border-sky-500 hover:bg-sky-50/40 dark:hover:bg-sky-400/5"
