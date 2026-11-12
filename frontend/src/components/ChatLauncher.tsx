@@ -80,8 +80,8 @@ export default function ChatLauncher({
         // Keep it mounted so chat history is preserved; only visually hidden
         aria-hidden={!open}
         className={[
-          // base position – desktop anchored bottom-right above button
-          "fixed z-40",
+          // z-[35]: above page content, below SourceDrawer overlay (z-40), drawer panel (z-50), toasts (z-[60])
+          "fixed z-[35]",
           "md:bottom-[5.5rem] md:right-6",
           // size (responsive)
           panelSizeClasses,
@@ -154,7 +154,8 @@ export default function ChatLauncher({
       </div>
 
       {/* ── Launcher button + label ───────────────────────────────────── */}
-      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-center gap-2">
+      {/* z-[36]: just above chat panel (z-[35]), below SourceDrawer overlay (z-40) */}
+      <div className="fixed bottom-6 right-6 z-[36] flex flex-col items-center gap-2">
         {/* "Have a question?" label — hidden after first open */}
         {!everOpened && (
           <span

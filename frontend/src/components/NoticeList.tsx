@@ -1,7 +1,10 @@
 import { Search, FileText } from "lucide-react";
 import { useState, useMemo, useEffect } from "react";
-import { getNotices } from "../api";
+import { getNotices, ask } from "../api";
 import type { NoticeRecord } from "../types";
+import { useContext } from "../useContext";
+import ChatLauncher from "./ChatLauncher";
+import SourceDrawer from "./SourceDrawer";
 
 const statusConfig = {
   current: { label: "Current", class: "bg-green-50 text-green-700 border-green-200 dark:bg-green-500/15 dark:text-green-300 dark:border-green-500/30" },
@@ -21,10 +24,20 @@ const CATEGORY_FILTERS = [
 ];
 
 export default function NoticeList() {
+  const { course, semester } = useContext();
   const [notices, setNotices] = useState<NoticeRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerData, setDrawerData] = useState({ factId: "", notice: "", page: 1 });
+
+  const handleAsk = (question: string) => ask(question, course, semester);
+
+  const openSource = (factId: string, notice: string, page: number) => {
+    setDrawerData({ factId, notice, page });
+    setDrawerOpen(true);
+  };
 
   useEffect(() => {
     getNotices().then((n) => {
@@ -139,6 +152,20 @@ export default function NoticeList() {
           )}
         </div>
       )}
+
+      {/* Floating chat launcher */}
+      <ChatLauncher
+        onAsk={handleAsk}
+        onSource={openSource}
+      />
+
+      <SourceDrawer
+        open={drawerOpen}
+        factId={drawerData.factId}
+        noticeLabel={drawerData.notice}
+        page={drawerData.page}
+        onClose={() => setDrawerOpen(false)}
+      />
     </div>
   );
 }
