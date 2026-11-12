@@ -28,7 +28,7 @@ export default function TopNav() {
         <div className="flex items-center gap-1 flex-shrink-0">
           <Link
             to="/notices"
-            className={`text-xs font-medium px-3 py-1.5 rounded-lg transition-colors ${
+            className={`hidden md:inline-flex text-xs font-medium px-3 py-1.5 rounded-lg transition-colors ${
               isNotices
                 ? "bg-white/10 text-accent font-semibold"
                 : "text-sky-100/80 hover:text-white hover:bg-white/10"
