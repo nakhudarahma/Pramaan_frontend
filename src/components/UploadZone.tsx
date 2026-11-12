@@ -38,10 +38,10 @@ export default function UploadZone({ onUpload, extracting }: Props) {
       onDragLeave={() => setDragOver(false)}
       onDrop={handleDrop}
       onClick={() => !extracting && inputRef.current?.click()}
-      className={`relative border-2 border-dashed rounded-3xl p-10 text-center cursor-pointer transition-all ${
+      className={`relative border-2 border-dashed rounded-3xl p-12 text-center cursor-pointer transition-all ${
         dragOver
-          ? "border-indigo-500 bg-indigo-50 scale-[1.01]"
-          : "border-slate-200 bg-slate-50 hover:border-indigo-300 hover:bg-indigo-50/30"
+          ? "border-navy-600 dark:border-sky-400 bg-sky-50 dark:bg-sky-400/10 scale-[1.01]"
+          : "border-slate-200 dark:border-night-border bg-slate-50 dark:bg-night-card hover:border-sky-300 dark:hover:border-sky-500 hover:bg-sky-50/40 dark:hover:bg-sky-400/5"
       }`}
     >
       <input
@@ -53,38 +53,38 @@ export default function UploadZone({ onUpload, extracting }: Props) {
 
       {extracting ? (
         <div className="flex flex-col items-center gap-3">
-          <Loader2 className="w-10 h-10 text-indigo-600 animate-spin" />
+          <Loader2 className="w-10 h-10 text-sky-500 animate-spin" />
           <div>
-            <p className="text-sm font-semibold text-slate-700">
+            <p className="text-sm font-semibold text-slate-700 dark:text-night-text">
               Extracting facts...
             </p>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-slate-500 dark:text-night-muted mt-1">
               Reading the notice and finding key information
             </p>
           </div>
         </div>
       ) : fileName ? (
         <div className="flex flex-col items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center">
-            <FileUp className="w-6 h-6 text-indigo-600" />
+          <div className="w-12 h-12 rounded-2xl bg-sky-50 dark:bg-sky-400/10 flex items-center justify-center">
+            <FileUp className="w-6 h-6 text-sky-500" />
           </div>
           <div>
-            <p className="text-sm font-semibold text-slate-700">{fileName}</p>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-sm font-semibold text-slate-700 dark:text-night-text">{fileName}</p>
+            <p className="text-xs text-slate-500 dark:text-night-muted mt-1">
               Drop another file or click to upload
             </p>
           </div>
         </div>
       ) : (
         <div className="flex flex-col items-center gap-3">
-          <div className="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center">
-            <UploadCloud className="w-7 h-7 text-indigo-600" />
+          <div className="w-14 h-14 rounded-2xl bg-sky-50 dark:bg-sky-400/10 flex items-center justify-center">
+            <UploadCloud className="w-7 h-7 text-sky-500" />
           </div>
           <div>
-            <p className="text-sm font-semibold text-slate-700">
+            <p className="text-sm font-semibold text-slate-700 dark:text-night-text">
               Drop a notice file here
             </p>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-slate-500 dark:text-night-muted mt-1">
               or click to browse — PDF, image, or any file
             </p>
           </div>

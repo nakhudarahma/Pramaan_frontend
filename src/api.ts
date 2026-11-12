@@ -25,7 +25,7 @@ const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 // ---------- localStorage persistence ----------
 
-const STORAGE_KEY = "pramaan-demo-state";
+const STORAGE_KEY = "pramaan-demo-state-v3";
 
 interface PersistedState {
   facts: typeof seedFacts;
@@ -87,6 +87,22 @@ function matchFact(
   return { key: scored[0].key, data: scored[0].data };
 }
 
+const FACT_TO_NOTICE: Record<string, string> = {
+  "f-latefee": "n10",
+  "f-examform": "n25",
+  "f-labexam-a": "n18",
+  "f-labexam-b": "n19",
+  "f-hostel": "n07",
+  "f-latefee-new": "n12",
+};
+
+const CATEGORY_BY_FACT: Record<string, string> = {
+  lateFee: "Fees",
+  examForm: "Exams",
+  labExam: "Exams",
+  hostelFee: "Hostel",
+};
+
 // ---------- API functions ----------
 
 export async function ask(
@@ -132,6 +148,18 @@ export async function ask(
 
   const f = match.data;
 
+  const primaryNotice =
+    state.notices.find((n) => n.id === FACT_TO_NOTICE[f.sources[0]?.factId]) ||
+    state.notices[0];
+  const noticeMeta = primaryNotice
+    ? {
+        issuedBy: primaryNotice.issuer,
+        noticeNumber: primaryNotice.id.toUpperCase(),
+        noticeDate: primaryNotice.date,
+        category: CATEGORY_BY_FACT[match.key] || "General",
+      }
+    : {};
+
   // Hostel fee scope check — only sem 1-2
   if (match.key === "hostelFee" && (sem > 2)) {
     return {
@@ -142,6 +170,7 @@ export async function ask(
       sources: f.sources,
       contact: "Hostel Office",
       note: "Your question was logged for the admin.",
+      ...noticeMeta,
     };
   }
 
@@ -154,6 +183,7 @@ export async function ask(
       validUntil: f.validUntil,
       sources: f.sources,
       contact: "Examination Cell",
+      ...noticeMeta,
     };
   }
 
@@ -173,6 +203,7 @@ export async function ask(
     replaces: f.replaces,
     sources: f.sources,
     contact: f.contact,
+    ...noticeMeta,
   };
 }
 
@@ -211,16 +242,7 @@ export async function getSource(factId: string): Promise<NoticeRecord> {
   }
   await delay(300);
   const state = loadState();
-  // map factId to notice
-  const factToNotice: Record<string, string> = {
-    "f-latefee": "n10",
-    "f-examform": "n25",
-    "f-labexam-a": "n18",
-    "f-labexam-b": "n19",
-    "f-hostel": "n07",
-    "f-latefee-new": "n12",
-  };
-  const noticeId = factToNotice[factId] || "n10";
+  const noticeId = FACT_TO_NOTICE[factId] || "n10";
   const notice = state.notices.find((n) => n.id === noticeId) || state.notices[0];
   return notice;
 }
@@ -356,16 +378,20 @@ export async function publishFacts(
     return res.json();
   }
   await delay(500);
-  return { count: approvedIds.length, affected: "B.Tech CS Sem 4" };
+  return { count: approvedIds.length, affected: "B.Sc Data Science Sem 4" };
 }
 
 // ---------- helpers ----------
 
 export function courseLabel(id: CourseId): string {
   const map: Record<CourseId, string> = {
-    "btech-cs": "B.Tech CS",
-    "btech-it": "B.Tech IT",
     "bsc-ds": "B.Sc Data Science",
+    "bsc-cs": "B.Sc Computer Science",
+    "bsc-it": "B.Sc Information Technology",
+    bcom: "B.Com",
+    bms: "BMS",
+    baf: "BAF",
+    ba: "BA",
   };
   return map[id];
 }

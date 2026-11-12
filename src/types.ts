@@ -1,7 +1,14 @@
 // Type definitions for Pramaan
 
-export type CourseId = "btech-cs" | "btech-it" | "bsc-ds";
-export type Semester = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+export type CourseId =
+  | "bsc-ds"
+  | "bsc-cs"
+  | "bsc-it"
+  | "bcom"
+  | "bms"
+  | "baf"
+  | "ba";
+export type Semester = 1 | 2 | 3 | 4 | 5 | 6;
 
 export type AnswerState = "verified" | "outdated" | "disputed" | "unavailable";
 
@@ -20,6 +27,10 @@ export interface AnswerCardData {
   sources: Source[];
   contact?: string;
   note?: string;
+  issuedBy?: string;
+  noticeNumber?: string;
+  noticeDate?: string;
+  category?: string;
 }
 
 export interface Deadline {
@@ -52,6 +63,9 @@ export interface NoticeRecord {
   date: string;
   page: number;
   status: "current" | "superseded" | "expired";
+  category: string;
+  noticeNumber: string;
+  replaces?: string;
   body: string;
   highlightedSentence: string;
 }
@@ -75,9 +89,13 @@ export interface UnansweredItem {
 }
 
 export const COURSES: { id: CourseId; label: string }[] = [
-  { id: "btech-cs", label: "B.Tech CS" },
-  { id: "btech-it", label: "B.Tech IT" },
   { id: "bsc-ds", label: "B.Sc Data Science" },
+  { id: "bsc-cs", label: "B.Sc Computer Science" },
+  { id: "bsc-it", label: "B.Sc Information Technology" },
+  { id: "bcom", label: "B.Com" },
+  { id: "bms", label: "BMS" },
+  { id: "baf", label: "BAF" },
+  { id: "ba", label: "BA" },
 ];
 
-export const SEMESTERS = [1, 2, 3, 4, 5, 6, 7, 8] as const;
+export const SEMESTERS = [1, 2, 3, 4, 5, 6] as const;

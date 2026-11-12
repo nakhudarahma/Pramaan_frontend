@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import type { CourseId, Semester } from "./types";
-import { COURSES } from "./types";
+import { COURSES, SEMESTERS } from "./types";
 
 const CONTEXT_KEY = "pramaan-context";
 
 export function useContext() {
-  const [course, setCourse] = useState<CourseId>("btech-cs");
+  const [course, setCourse] = useState<CourseId>("bsc-ds");
   const [semester, setSemester] = useState<Semester>(4);
 
   useEffect(() => {
@@ -13,8 +13,10 @@ export function useContext() {
       const raw = localStorage.getItem(CONTEXT_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        if (parsed.course) setCourse(parsed.course);
-        if (parsed.semester) setSemester(parsed.semester);
+        const validCourse = COURSES.some((c) => c.id === parsed.course);
+        const validSem = SEMESTERS.includes(parsed.semester);
+        if (validCourse) setCourse(parsed.course);
+        if (validSem) setSemester(parsed.semester);
       }
     } catch {
       /* ignore */

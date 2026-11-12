@@ -9,18 +9,18 @@ interface Props {
 }
 
 export default function ContextBar({ course, semester, courses, onChange }: Props) {
-  const semesters = [1, 2, 3, 4, 5, 6, 7, 8];
+  const semesters = [1, 2, 3, 4, 5, 6];
 
   const courseLabel = courses.find((c) => c.id === course)?.label || course;
 
   return (
-    <div className="bg-white border-b border-slate-200">
-      <div className="max-w-2xl mx-auto px-4 py-3">
+    <div className="bg-white dark:bg-night-card border-b border-slate-200 dark:border-night-border">
+      <div className="max-w-5xl mx-auto px-4 py-3">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+          <span className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-night-muted">
             Viewing as
           </span>
-          <span className="text-sm font-semibold text-indigo-600">
+          <span className="text-sm font-semibold text-navy-600 dark:text-sky-300">
             {courseLabel}, Sem {semester}
           </span>
         </div>
@@ -29,7 +29,7 @@ export default function ContextBar({ course, semester, courses, onChange }: Prop
             <select
               value={course}
               onChange={(e) => onChange(e.target.value as CourseId, semester)}
-              className="w-full appearance-none bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-3 pr-9 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+              className="w-full appearance-none bg-slate-50 dark:bg-night-page border border-slate-200 dark:border-night-border rounded-xl py-3 pl-3 pr-9 text-sm font-medium text-slate-700 dark:text-night-text focus:outline-none focus:border-sky-300 dark:focus:border-sky-500 focus:ring-2 focus:ring-sky-400 cursor-pointer transition-colors"
             >
               {courses.map((c) => (
                 <option key={c.id} value={c.id}>
@@ -37,13 +37,13 @@ export default function ContextBar({ course, semester, courses, onChange }: Prop
                 </option>
               ))}
             </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 dark:text-night-muted pointer-events-none" />
           </div>
           <div className="relative w-28">
             <select
               value={semester}
               onChange={(e) => onChange(course, Number(e.target.value) as Semester)}
-              className="w-full appearance-none bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-3 pr-9 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+              className="w-full appearance-none bg-slate-50 dark:bg-night-page border border-slate-200 dark:border-night-border rounded-xl py-3 pl-3 pr-9 text-sm font-medium text-slate-700 dark:text-night-text focus:outline-none focus:border-sky-300 dark:focus:border-sky-500 focus:ring-2 focus:ring-sky-400 cursor-pointer transition-colors"
             >
               {semesters.map((s) => (
                 <option key={s} value={s}>
@@ -51,7 +51,7 @@ export default function ContextBar({ course, semester, courses, onChange }: Prop
                 </option>
               ))}
             </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 dark:text-night-muted pointer-events-none" />
           </div>
         </div>
       </div>
