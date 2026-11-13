@@ -1,6 +1,7 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Home, MessageCircleQuestion, FileText } from "lucide-react";
 import { useState, useEffect } from "react";
+import { getSession } from "../session";
 
 export default function BottomNav() {
   const location = useLocation();
@@ -17,6 +18,13 @@ export default function BottomNav() {
     window.addEventListener("pramaan:chat-state", handleChatState);
     return () => window.removeEventListener("pramaan:chat-state", handleChatState);
   }, []);
+
+  const session = getSession();
+  const isAuthPage = location.pathname === "/login" || location.pathname === "/select-course";
+
+  if (!session || session.role !== "student" || isAuthPage) {
+    return null;
+  }
 
   const handleAskClick = () => {
     if (location.pathname === "/admin") {

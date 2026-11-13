@@ -114,7 +114,7 @@ export default function WelcomeScreen({
         </button>
 
         <p className="mt-3 text-center text-[11px] text-slate-400 dark:text-night-muted">
-          No login needed. Your choice is saved on this device.
+          Your choice is saved on this device.
         </p>
       </div>
     </div>

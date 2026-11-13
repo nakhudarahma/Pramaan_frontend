@@ -66,6 +66,25 @@ export function resetDemo() {
   localStorage.removeItem("pramaan-context");
 }
 
+interface GoogleUser {
+  name: string;
+  email: string;
+  picture?: string;
+  role: "student" | "admin";
+}
+
+type GoogleSignInResult =
+  | { ok: true; user: GoogleUser }
+  | { ok: false; reason: string };
+
+export async function googleSignIn(
+  role: "student" | "admin"
+): Promise<GoogleSignInResult> {
+  // Backend: replace with the real Google login. Open the Google account chooser, verify the token on the server, check the admin email for role admin, then return { ok: true, user: { name, email, picture, role } }.
+  void role;
+  return { ok: false, reason: "not_connected" };
+}
+
 // ---------- keyword matching ----------
 
 function matchFact(

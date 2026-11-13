@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 const STORAGE_KEY = "pramaan-theme";
+const THEME_EVENT = "pramaan:theme-change";
 
 type Theme = "light" | "dark";
 
@@ -37,6 +38,18 @@ export function useTheme() {
     return () => media.removeEventListener("change", handleChange);
   }, [hasChoice]);
 
+  useEffect(() => {
+    const handleThemeEvent = (event: Event) => {
+      const next = (event as CustomEvent<Theme>).detail;
+      if (next !== "light" && next !== "dark") return;
+      setTheme(next);
+      setHasChoice(true);
+    };
+
+    window.addEventListener(THEME_EVENT, handleThemeEvent);
+    return () => window.removeEventListener(THEME_EVENT, handleThemeEvent);
+  }, []);
+
   const toggleTheme = () => {
     const next = theme === "dark" ? "light" : "dark";
     setTheme(next);
@@ -46,6 +59,7 @@ export function useTheme() {
     } catch {
       /* storage unavailable */
     }
+    window.dispatchEvent(new CustomEvent<Theme>(THEME_EVENT, { detail: next }));
   };
 
   return { theme, toggleTheme };

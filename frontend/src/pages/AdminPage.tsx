@@ -1,13 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import {
-  ShieldCheck,
   ArrowLeft,
   Send,
   FileText,
   ClipboardCheck,
   AlertTriangle,
   HelpCircle,
-  UploadCloud,
   CheckCircle2,
   X,
   Search,
@@ -32,7 +30,7 @@ import {
 } from "../api";
 import type { FactRow, UnansweredItem, NoticeRecord, CourseId, Semester } from "../types";
 
-type Stage = "login" | "upload" | "review";
+type Stage = "upload" | "review";
 type ActiveTab = "notices" | "pending" | "conflicts" | "unanswered" | null;
 
 interface ReviewData {
@@ -63,7 +61,7 @@ const statusConfig = {
 };
 
 export default function AdminPage() {
-  const [stage, setStage] = useState<Stage>("login");
+  const [stage, setStage] = useState<Stage>("upload");
   const [activeTab, setActiveTab] = useState<ActiveTab>(null);
   const [extracting, setExtracting] = useState(false);
   const [notices, setNotices] = useState<NoticeRecord[]>([]);
@@ -207,67 +205,11 @@ export default function AdminPage() {
     (r) => r.conflict && r.status === "pending"
   );
 
-  // ---------- Login screen ----------
-  if (stage === "login") {
-    return (
-      <div className="max-w-[1600px] mx-auto px-4 md:px-8 xl:px-12 py-10 md:py-16 min-h-[75vh] flex items-center justify-center">
-        <div className="w-full max-w-lg mx-auto bg-white dark:bg-night-card border border-slate-200 dark:border-night-border rounded-3xl shadow-card p-6 sm:p-8 text-center">
-          <div className="w-16 h-16 rounded-3xl bg-navy-600 flex items-center justify-center mb-5 mx-auto shadow-lg">
-            <ShieldCheck className="w-8 h-8 text-white" strokeWidth={2.5} />
-          </div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-night-text mb-2">
-            Admin Portal
-          </h1>
-          <p className="text-sm text-slate-500 dark:text-night-muted leading-relaxed mb-6">
-            Demo access. No password needed. Upload notices and verify extracted facts.
-          </p>
-
-          <ul className="space-y-2.5 text-left mb-7">
-            {[
-              { label: "Upload notices", icon: UploadCloud },
-              { label: "Review extracted facts", icon: ClipboardCheck },
-              { label: "Publish verified facts", icon: Send },
-            ].map(({ label, icon: Icon }) => (
-              <li
-                key={label}
-                className="flex items-center gap-3 rounded-xl bg-slate-50 dark:bg-white/5 px-3.5 py-3"
-              >
-                <span className="w-8 h-8 rounded-lg bg-sky-50 dark:bg-sky-400/10 text-sky-500 dark:text-sky-400 flex items-center justify-center flex-shrink-0">
-                  <Icon className="w-4 h-4" />
-                </span>
-                <span className="text-[13px] font-medium text-slate-700 dark:text-night-text">
-                  {label}
-                </span>
-              </li>
-            ))}
-          </ul>
-
-          <button
-            onClick={() => setStage("upload")}
-            className="gradient-primary w-full bg-navy-600 text-white font-semibold py-4 rounded-2xl shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl hover:brightness-110 active:scale-[0.98]"
-          >
-            Continue as Admin
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   // ---------- Upload screen (Main Dashboard) ----------
   if (stage === "upload") {
     return (
       <div className="max-w-[1600px] mx-auto px-4 md:px-8 xl:px-12 py-6 pb-24 md:pb-6">
         <div className="flex items-center gap-2 mb-6">
-          <button
-            onClick={() => {
-              setActiveTab(null);
-              setStage("login");
-            }}
-            className="w-8 h-8 rounded-lg hover:bg-slate-100 dark:hover:bg-white/10 flex items-center justify-center transition-all active:scale-95"
-            aria-label="Back to login"
-          >
-            <ArrowLeft className="w-5 h-5 text-slate-500 dark:text-night-muted" />
-          </button>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-night-text">
             Admin Dashboard
           </h1>
