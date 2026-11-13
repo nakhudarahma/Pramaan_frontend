@@ -1,9 +1,80 @@
-import { CalendarClock, ArrowRight } from "lucide-react";
+import { CalendarClock, CalendarPlus, ArrowRight } from "lucide-react";
 import type { Deadline } from "../types";
 
 interface Props {
   deadlines: Deadline[];
   loading?: boolean;
+}
+
+const MONTH_INDEX: Record<string, number> = {
+  Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
+  Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11,
+};
+
+function parseDeadlineDate(value: string): Date | null {
+  const match = value.match(/^(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})$/);
+  if (!match) return null;
+  const day = Number(match[1]);
+  const month = MONTH_INDEX[match[2]];
+  const year = Number(match[3]);
+  if (month === undefined) return null;
+  return new Date(year, month, day);
+}
+
+function toIcsDate(date: Date): string {
+  return `${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, "0")}${String(date.getDate()).padStart(2, "0")}`;
+}
+
+function toIcsTimestamp(date: Date): string {
+  return date.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+}
+
+function escapeIcsText(value: string): string {
+  return value
+    .replace(/\\/g, "\\\\")
+    .replace(/;/g, "\\;")
+    .replace(/,/g, "\\,")
+    .replace(/\n/g, "\\n");
+}
+
+function downloadDeadlineIcs(deadline: Deadline): void {
+  const start = parseDeadlineDate(deadline.date);
+  if (!start) return;
+  const end = new Date(start);
+  end.setDate(start.getDate() + 1);
+
+  const lines = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//Pramaan//Deadlines//EN",
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
+    "BEGIN:VEVENT",
+    `UID:${deadline.id}@pramaan`,
+    `DTSTAMP:${toIcsTimestamp(new Date())}`,
+    `DTSTART;VALUE=DATE:${toIcsDate(start)}`,
+    `DTEND;VALUE=DATE:${toIcsDate(end)}`,
+    `SUMMARY:${escapeIcsText(deadline.title)}`,
+    "BEGIN:VALARM",
+    "ACTION:DISPLAY",
+    "DESCRIPTION:Reminder",
+    "TRIGGER:-P1D",
+    "END:VALARM",
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ];
+
+  const blob = new Blob([lines.join("\r\n") + "\r\n"], {
+    type: "text/calendar;charset=utf-8",
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `deadline-${deadline.id}.ics`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
 }
 
 export default function DeadlineStrip({ deadlines, loading }: Props) {
@@ -80,9 +151,20 @@ export default function DeadlineStrip({ deadlines, loading }: Props) {
               <div className="text-[12px] xl:text-[15px] font-semibold text-slate-900 dark:text-night-text leading-tight line-clamp-2">
                 {d.title}
               </div>
-              <div className="text-[10px] xl:text-xs text-slate-500 dark:text-night-muted mt-1 flex items-center gap-1">
-                {d.date}
-                <ArrowRight className="w-3 h-3" />
+              <div className="flex items-center justify-between mt-1">
+                <div className="text-[10px] xl:text-xs text-slate-500 dark:text-night-muted flex items-center gap-1">
+                  {d.date}
+                  <ArrowRight className="w-3 h-3" />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => downloadDeadlineIcs(d)}
+                  aria-label={`Add ${d.title} to calendar`}
+                  title="Add to calendar"
+                  className="inline-flex items-center justify-center w-6 h-6 rounded-md text-slate-400 hover:text-sky-500 hover:bg-sky-50 dark:text-night-muted dark:hover:text-sky-400 dark:hover:bg-sky-400/10 transition-colors flex-shrink-0"
+                >
+                  <CalendarPlus className="w-3.5 h-3.5" />
+                </button>
               </div>
             </div>
           );

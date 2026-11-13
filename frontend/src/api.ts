@@ -25,7 +25,7 @@ const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 // ---------- localStorage persistence ----------
 
-const STORAGE_KEY = "pramaan-demo-state-v4";
+const STORAGE_KEY = "pramaan-demo-state-v5";
 
 interface PersistedState {
   facts: typeof seedFacts;
@@ -63,6 +63,7 @@ function saveState(state: PersistedState) {
 
 export function resetDemo() {
   localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem("pramaan-context");
 }
 
 // ---------- keyword matching ----------
@@ -93,6 +94,7 @@ const FACT_TO_NOTICE: Record<string, string> = {
   "f-labexam-a": "n18",
   "f-labexam-b": "n19",
   "f-hostel": "n07",
+  "f-library": "n08",
   "f-latefee-new": "n12",
 };
 
@@ -101,7 +103,16 @@ const CATEGORY_BY_FACT: Record<string, string> = {
   examForm: "Exams",
   labExam: "Exams",
   hostelFee: "Hostel",
+  libraryFee: "Library",
 };
+
+function parseDateValue(value: string): Date | null {
+  const match = value.match(/^(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})$/);
+  if (!match) return null;
+  const month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"].indexOf(match[2]);
+  if (month === -1) return null;
+  return new Date(Number(match[3]), month, Number(match[1]));
+}
 
 // ---------- API functions ----------
 
@@ -183,6 +194,23 @@ export async function ask(
       validUntil: f.validUntil,
       sources: f.sources,
       contact: "Examination Cell",
+      ...noticeMeta,
+    };
+  }
+
+  // Check if outdated — facts whose validity has passed
+  const validUntilDate = parseDateValue(f.validUntil);
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  if (validUntilDate && validUntilDate < today) {
+    return {
+      state: "outdated",
+      text: f.value,
+      appliesTo: f.appliesTo,
+      validUntil: f.validUntil,
+      replaces: f.replaces,
+      sources: f.sources,
+      contact: f.contact,
       ...noticeMeta,
     };
   }

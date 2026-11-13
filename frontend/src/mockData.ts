@@ -370,6 +370,16 @@ export const seedFacts: Record<string, {
     keywords: ["hostel", "hostel fee", "dorm", "accommodation"],
     scope: "all",
   },
+  libraryFee: {
+    factId: "f-library",
+    key: "library membership fee",
+    value: "Rs. 500 per year",
+    appliesTo: "All courses",
+    validUntil: "31 Oct 2026",
+    sources: [{ factId: "f-library", notice: "Notice 06 Nov", page: 2 }],
+    keywords: ["library", "library fee", "library membership", "membership"],
+    scope: "all",
+  },
 };
 
 export const seedFactRows: FactRow[] = [
