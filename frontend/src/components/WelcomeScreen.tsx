@@ -32,8 +32,8 @@ export default function WelcomeScreen({
     "w-full appearance-none bg-slate-50 dark:bg-night-page border border-slate-200 dark:border-night-border rounded-xl py-3 pl-3 pr-9 text-sm font-medium text-slate-700 dark:text-night-text focus:outline-none focus:border-sky-300 dark:focus:border-sky-500 focus:ring-2 focus:ring-sky-400 cursor-pointer transition-colors";
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-page dark:bg-night-page p-4 sm:p-6">
-      <div className="w-full max-w-md rounded-3xl border border-slate-100 dark:border-night-border bg-white dark:bg-night-card p-6 sm:p-8 shadow-card animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-transparent p-4 sm:p-6">
+      <div className="w-full max-w-md rounded-3xl border border-slate-200/80 dark:border-night-border bg-white/95 dark:bg-night-card/95 backdrop-blur-md p-6 sm:p-8 shadow-card animate-fade-in">
         <div className="mb-5 flex justify-center">
           <div className="relative">
             <div className="absolute inset-0 rounded-2xl bg-sky/40 blur-xl" aria-hidden="true" />

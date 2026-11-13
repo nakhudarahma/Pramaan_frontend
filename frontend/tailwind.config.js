@@ -26,9 +26,9 @@ export default {
         sky: {
           DEFAULT: '#38bdf8',
         },
-        page: '#f4f8fb',
+        page: '#EAF4FB',
         night: {
-          page: '#0b1220',
+          page: '#0A1424',
           card: '#111c2e',
           border: '#1e2d45',
           text: '#e6edf5',

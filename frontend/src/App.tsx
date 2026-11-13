@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import TopNav from "./components/TopNav";
 import BottomNav from "./components/BottomNav";
+import AnimatedBackground from "./components/AnimatedBackground";
 import StudentPage from "./pages/StudentPage";
 import AdminPage from "./pages/AdminPage";
 import LoginPage from "./pages/LoginPage";
@@ -30,7 +31,8 @@ function RequireRole({ role, children }: { role: SessionRole; children: ReactNod
 function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-[100dvh] bg-page dark:bg-night-page">
+      <div className="min-h-[100dvh] bg-transparent text-slate-800 dark:text-night-text relative">
+        <AnimatedBackground />
         <TopNav />
         <Routes>
           <Route path="/login" element={<LoginPage />} />

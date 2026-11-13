@@ -1,9 +1,45 @@
-import { CalendarClock, CalendarPlus, ArrowRight } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { CalendarClock, CalendarPlus, ArrowRight, Check } from "lucide-react";
 import type { Deadline } from "../types";
+import Toast from "./Toast";
 
 interface Props {
   deadlines: Deadline[];
   loading?: boolean;
+}
+
+function CountUp({ value }: { value: number }) {
+  const [display, setDisplay] = useState(() =>
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ? value
+      : 0
+  );
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setDisplay(value);
+      return;
+    }
+
+    let frame = 0;
+    let start: number | null = null;
+    const duration = 700;
+
+    setDisplay(0);
+    const tick = (now: number) => {
+      if (start === null) start = now;
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setDisplay(Math.round(value * eased));
+      if (progress < 1) frame = requestAnimationFrame(tick);
+    };
+
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [value]);
+
+  return <>{display}</>;
 }
 
 const MONTH_INDEX: Record<string, number> = {
@@ -78,6 +114,29 @@ function downloadDeadlineIcs(deadline: Deadline): void {
 }
 
 export default function DeadlineStrip({ deadlines, loading }: Props) {
+  const [addedId, setAddedId] = useState<string | null>(null);
+  const [addedToast, setAddedToast] = useState(0);
+  const addedTimer = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (addedTimer.current !== null) {
+        window.clearTimeout(addedTimer.current);
+      }
+    };
+  }, []);
+
+  const handleAddToCalendar = (deadline: Deadline) => {
+    downloadDeadlineIcs(deadline);
+    setAddedId(deadline.id);
+    setAddedToast((count) => count + 1);
+
+    if (addedTimer.current !== null) {
+      window.clearTimeout(addedTimer.current);
+    }
+    addedTimer.current = window.setTimeout(() => setAddedId(null), 1000);
+  };
+
   if (loading) {
     return (
       <div>
@@ -85,11 +144,11 @@ export default function DeadlineStrip({ deadlines, loading }: Props) {
           <CalendarClock className="w-4 h-4 text-sky-500 dark:text-sky-400" />
           <span className="text-sm font-bold uppercase tracking-wide text-slate-700 dark:text-night-text">Next deadlines</span>
         </div>
-        <div className="flex gap-2.5 overflow-x-auto no-scrollbar pb-1 sm:grid sm:grid-cols-3 sm:gap-3">
+        <div className="flex items-stretch gap-2.5 overflow-x-auto no-scrollbar pb-1 sm:grid sm:grid-cols-3 sm:gap-3">
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="h-full min-w-[140px] flex-1 sm:min-w-0 bg-white dark:bg-night-card rounded-2xl border border-slate-100 dark:border-night-border shadow-card p-3 xl:p-5"
+              className="w-[155px] flex-shrink-0 sm:w-auto sm:flex-1 sm:min-w-0 bg-white/90 dark:bg-night-card/90 backdrop-blur-sm rounded-2xl border border-slate-100 dark:border-night-border shadow-card p-3 xl:p-5"
             >
               <div className="flex items-center gap-2 mb-2">
                 <div className="skeleton w-8 h-8 rounded-lg" />
@@ -113,63 +172,89 @@ export default function DeadlineStrip({ deadlines, loading }: Props) {
   }
 
   return (
-    <div>
-      <div className="flex items-center gap-2 mb-3">
-        <CalendarClock className="w-4 h-4 text-sky-500 dark:text-sky-400" />
-        <h2 className="text-sm font-bold uppercase tracking-wide text-slate-700 dark:text-night-text">
-          Next deadlines
-        </h2>
-      </div>
-      <div className="flex gap-2.5 overflow-x-auto no-scrollbar pb-1 sm:grid sm:grid-cols-3 sm:gap-3">
-        {deadlines.map((d) => {
-          const countdownTone =
-            d.daysLeft < 7
-              ? "text-rose-600 dark:text-rose-400"
-              : d.daysLeft <= 14
-                ? "text-amber-600 dark:text-amber-400"
-                : "text-emerald-600 dark:text-emerald-400";
+    <>
+      <div>
+        <div className="flex items-center gap-2 mb-3">
+          <CalendarClock className="w-4 h-4 text-sky-500 dark:text-sky-400" />
+          <h2 className="text-sm font-bold uppercase tracking-wide text-slate-700 dark:text-night-text">
+            Next deadlines
+          </h2>
+        </div>
+        <div className="flex items-stretch gap-2.5 overflow-x-auto no-scrollbar pb-1 sm:grid sm:grid-cols-3 sm:gap-3">
+          {deadlines.map((d) => {
+            const countdownTone =
+              d.daysLeft < 7
+                ? "text-rose-600 dark:text-rose-400"
+                : d.daysLeft <= 14
+                  ? "text-amber-600 dark:text-amber-400"
+                  : "text-emerald-600 dark:text-emerald-400";
 
-          return (
-            <div
-              key={d.id}
-              className="flex h-full min-w-[140px] flex-1 sm:min-w-0 flex-col bg-white dark:bg-night-card rounded-2xl border border-slate-100 dark:border-night-border shadow-card p-3 xl:p-5 hover:shadow-md hover:-translate-y-0.5 transition-all"
-            >
-              <div className="flex items-center gap-1.5 xl:gap-2 mb-2">
-                <div className="w-7 h-7 xl:w-9 xl:h-9 rounded-lg xl:rounded-xl bg-sky-50 dark:bg-sky-400/10 flex items-center justify-center flex-shrink-0">
-                  <CalendarClock className="w-3.5 h-3.5 xl:w-4 xl:h-4 text-sky-500 dark:text-sky-400" />
-                </div>
-                <span className={`inline-flex items-center gap-1 text-[11px] xl:text-xs font-bold ${countdownTone}`}>
-                  {d.daysLeft}d left
-                  {d.daysLeft < 5 && (
-                    <span className="relative flex h-1.5 w-1.5" aria-label="Urgent">
-                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-rose-500 opacity-75" />
-                      <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-rose-500" />
+            return (
+              <div
+                key={d.id}
+                className="student-card flex w-[155px] flex-shrink-0 flex-col justify-between bg-white/90 dark:bg-night-card/90 backdrop-blur-sm rounded-2xl border border-slate-100 dark:border-night-border shadow-card p-3 xl:p-5 sm:w-auto sm:flex-1 sm:min-w-0 sm:h-full"
+              >
+                <div>
+                  <div className="flex items-center gap-1.5 xl:gap-2 mb-2">
+                    <div className="w-7 h-7 xl:w-9 xl:h-9 rounded-lg xl:rounded-xl bg-sky-50 dark:bg-sky-400/10 flex items-center justify-center flex-shrink-0">
+                      <CalendarClock className="w-3.5 h-3.5 xl:w-4 xl:h-4 text-sky-500 dark:text-sky-400" />
+                    </div>
+                    <span
+                      aria-label={`${d.daysLeft} days left`}
+                      className={`inline-flex items-center gap-1 text-[11px] xl:text-xs font-bold ${countdownTone} ${
+                        d.daysLeft < 7 ? "deadline-pulse" : ""
+                      }`}
+                    >
+                      <CountUp value={d.daysLeft} />d left
+                      {d.daysLeft < 5 && (
+                        <span className="relative flex h-1.5 w-1.5" aria-label="Urgent">
+                          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-rose-500 opacity-75" />
+                          <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-rose-500" />
+                        </span>
+                      )}
                     </span>
-                  )}
-                </span>
-              </div>
-              <div className="text-[12px] xl:text-[15px] font-semibold text-slate-900 dark:text-night-text leading-tight line-clamp-2">
-                {d.title}
-              </div>
-              <div className="flex items-center justify-between mt-1">
-                <div className="text-[10px] xl:text-xs text-slate-500 dark:text-night-muted flex items-center gap-1">
-                  {d.date}
-                  <ArrowRight className="w-3 h-3" />
+                  </div>
+                  <div className="text-[12px] xl:text-[15px] font-semibold text-slate-900 dark:text-night-text leading-tight line-clamp-2 min-h-[2rem] sm:min-h-0">
+                    {d.title}
+                  </div>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => downloadDeadlineIcs(d)}
-                  aria-label={`Add ${d.title} to calendar`}
-                  title="Add to calendar"
-                  className="inline-flex items-center justify-center w-6 h-6 rounded-md text-slate-400 hover:text-sky-500 hover:bg-sky-50 dark:text-night-muted dark:hover:text-sky-400 dark:hover:bg-sky-400/10 transition-colors flex-shrink-0"
-                >
-                  <CalendarPlus className="w-3.5 h-3.5" />
-                </button>
+
+                <div className="flex items-center justify-between mt-2 pt-1 border-t border-slate-100/60 dark:border-night-border/40 sm:border-0 sm:pt-0 sm:mt-1">
+                  <div className="text-[10px] xl:text-xs text-slate-500 dark:text-night-muted flex items-center gap-1">
+                    {d.date}
+                    <ArrowRight className="w-3 h-3" />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleAddToCalendar(d)}
+                    aria-label={
+                      addedId === d.id
+                        ? `Added ${d.title} to calendar file`
+                        : `Add ${d.title} to calendar`
+                    }
+                    title="Add to calendar"
+                    className="inline-flex items-center justify-center w-6 h-6 rounded-md text-slate-400 hover:text-sky-500 hover:bg-sky-50 dark:text-night-muted dark:hover:text-sky-400 dark:hover:bg-sky-400/10 transition-colors flex-shrink-0"
+                  >
+                    {addedId === d.id ? (
+                      <Check className="calendar-check w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />
+                    ) : (
+                      <CalendarPlus className="w-3.5 h-3.5" />
+                    )}
+                  </button>
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
-    </div>
+      {addedToast > 0 && (
+        <Toast
+          key={addedToast}
+          message="Added to calendar file"
+          duration={1800}
+          onDone={() => setAddedToast(0)}
+        />
+      )}
+    </>
   );
 }

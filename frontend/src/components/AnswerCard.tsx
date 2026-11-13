@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   ShieldCheck,
   AlertTriangle,
@@ -17,7 +17,6 @@ import {
 } from "lucide-react";
 import type { AnswerCardData } from "../types";
 import Toast from "./Toast";
-import { celebrateVerified } from "../celebrate";
 
 interface Props {
   data: AnswerCardData;
@@ -25,18 +24,10 @@ interface Props {
   onSource: (factId: string, notice: string, page: number) => void;
 }
 
-let hasCelebratedVerified = false;
-
 export default function AnswerCard({ data, loading, onSource }: Props) {
   const [copied, setCopied] = useState(false);
   const [reaction, setReaction] = useState<"up" | "down" | null>(null);
   const [showCopiedToast, setShowCopiedToast] = useState(false);
-
-  useEffect(() => {
-    if (data.state !== "verified" || hasCelebratedVerified) return;
-    hasCelebratedVerified = true;
-    celebrateVerified();
-  }, [data.state]);
 
   const shareText = `${data.text}${data.appliesTo ? ` — ${data.appliesTo}` : ""}`;
 
@@ -125,7 +116,11 @@ export default function AnswerCard({ data, loading, onSource }: Props) {
       <div
         className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold tracking-wide border ${c.badgeClass} mb-3`}
       >
-        <Icon className={`w-3.5 h-3.5 ${c.iconClass}`} />
+        <Icon
+          className={`w-3.5 h-3.5 ${c.iconClass} ${
+            data.state === "verified" ? "shield-check-draw" : ""
+          }`}
+        />
         {c.badge}
       </div>
 

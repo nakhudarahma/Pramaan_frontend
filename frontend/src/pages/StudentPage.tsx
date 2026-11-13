@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { ask, getDeadlines, getChanges } from "../api";
 import type { AnswerCardData, Deadline, ChangeItem } from "../types";
 import { useContext } from "../useContext";
+import { getSession } from "../session";
 import ContextBar from "../components/ContextBar";
 import DeadlineStrip from "../components/DeadlineStrip";
 import ChangeFeed from "../components/ChangeFeed";
@@ -17,6 +18,11 @@ export default function StudentPage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [drawerData, setDrawerData] = useState({ factId: "", notice: "", page: 1 });
   const [pendingQuestion, setPendingQuestion] = useState<{ q: string; n: number } | null>(null);
+
+  const firstName = getSession()?.name.trim().split(/\s+/)[0] || "Student";
+  const hour = new Date().getHours();
+  const greeting =
+    hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
 
   const fetchData = useCallback(
     (showLoading = true) => {
@@ -65,11 +71,18 @@ export default function StudentPage() {
         onChange={update}
       />
 
-      <div className="flex-1 min-h-0">
-        <div className="mx-auto flex h-full max-w-[1600px] flex-col px-4 md:px-8 xl:px-12 py-4">
-          <div className="mb-4 flex-shrink-0">
+      <div className="relative flex-1 min-h-0">
+        <div
+          className="student-glow pointer-events-none absolute inset-x-0 top-0 h-56"
+          aria-hidden="true"
+        />
+        <div className="relative mx-auto flex h-full max-w-[1600px] flex-col px-4 md:px-8 xl:px-12 py-4">
+          <div
+            className="student-reveal mb-4 flex-shrink-0"
+            style={{ animationDelay: "0ms" }}
+          >
             <p className="text-base font-semibold text-navy-700 dark:text-night-text">
-              What do you want to know today?
+              {greeting}, {firstName}
             </p>
             <span className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-white dark:bg-night-card border border-slate-200 dark:border-night-border px-3 py-1 text-xs font-medium text-slate-500 dark:text-night-muted shadow-sm">
               <span className="w-1.5 h-1.5 rounded-full bg-sky-500" />
@@ -78,13 +91,22 @@ export default function StudentPage() {
           </div>
 
           <div className="flex flex-col flex-1 min-h-0 gap-4 overflow-y-auto thin-scrollbar pr-1">
-            <div className="flex-shrink-0">
+            <div
+              className="student-reveal flex-shrink-0"
+              style={{ animationDelay: "80ms" }}
+            >
               <DeadlineStrip deadlines={deadlines} loading={loading} />
             </div>
-            <div className="flex-1 min-h-0">
+            <div
+              className="student-reveal flex-1 min-h-0"
+              style={{ animationDelay: "160ms" }}
+            >
               <ChangeFeed changes={changes} loading={loading} onSource={openSource} />
             </div>
-            <div className="flex-shrink-0">
+            <div
+              className="student-reveal flex-shrink-0"
+              style={{ animationDelay: "240ms" }}
+            >
               <IntentTiles onAsk={handleIntentAsk} />
             </div>
           </div>

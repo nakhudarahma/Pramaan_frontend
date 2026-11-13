@@ -25,14 +25,6 @@ export function burstConfetti(options: BurstOptions = {}) {
   });
 }
 
-export function celebrateVerified() {
-  burstConfetti({
-    origin: { x: 0.5, y: 0.62 },
-    particleCount: 32,
-    spread: 50,
-  });
-}
-
 export function celebratePublish() {
   burstConfetti({
     origin: { x: 0.5, y: 0.72 },

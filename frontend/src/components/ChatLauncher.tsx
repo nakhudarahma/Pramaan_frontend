@@ -140,7 +140,7 @@ export default function ChatLauncher({
           "overflow-hidden",
           // open / closed — slide-up + fade
           open
-            ? "opacity-100 translate-y-0 pointer-events-auto animate-chat-in"
+            ? "opacity-100 translate-y-0 pointer-events-auto chat-pop"
             : "opacity-0 translate-y-5 pointer-events-none",
           "transition-[opacity,transform] duration-200 ease-out",
         ].join(" ")}

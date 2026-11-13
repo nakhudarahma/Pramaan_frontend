@@ -20,7 +20,7 @@ interface Props {
 
 const SUGGESTIONS = [
   { label: "What's the late fee?", question: "What's the late fee?" },
-  { label: "When's the exam form due?", question: "When's the exam form due?" },
+  { label: "Exam form kab tak hai?", question: "When's the exam form due?" },
   { label: "Re-exam kab hai?", question: "Re-exam date?" },
   { label: "Library fee?", question: "Library fee?" },
 ];

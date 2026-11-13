@@ -76,7 +76,7 @@ export default function NoticeList() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search notices..."
-            className="w-full bg-white dark:bg-night-card border border-slate-200 dark:border-night-border rounded-xl py-3 pl-10 pr-4 text-sm text-slate-700 dark:text-night-text placeholder:text-slate-500 dark:placeholder:text-night-muted focus:outline-none focus:border-sky-300 dark:focus:border-sky-500 focus:ring-2 focus:ring-sky-400 transition-colors"
+            className="w-full bg-white/90 dark:bg-night-card/90 backdrop-blur-sm border border-slate-200 dark:border-night-border rounded-xl py-3 pl-10 pr-4 text-sm text-slate-700 dark:text-night-text placeholder:text-slate-500 dark:placeholder:text-night-muted focus:outline-none focus:border-sky-300 dark:focus:border-sky-500 focus:ring-2 focus:ring-sky-400 transition-colors"
           />
         </div>
         <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-1">
@@ -87,7 +87,7 @@ export default function NoticeList() {
               className={`whitespace-nowrap text-[11px] font-semibold px-2.5 py-1.5 rounded-lg border transition-colors ${
                 category === cat
                   ? "bg-navy-600 text-white border-navy-600 shadow-sm"
-                  : "bg-white dark:bg-night-card text-slate-500 dark:text-night-muted border-slate-200 dark:border-night-border hover:border-sky-300 dark:hover:border-sky-500 hover:text-sky-600 dark:hover:text-sky-300 active:scale-95"
+                  : "bg-white/90 dark:bg-night-card/90 backdrop-blur-sm text-slate-500 dark:text-night-muted border-slate-200 dark:border-night-border hover:border-sky-300 dark:hover:border-sky-500 hover:text-sky-600 dark:hover:text-sky-300 active:scale-95"
               }`}
             >
               {cat}
@@ -99,7 +99,7 @@ export default function NoticeList() {
       {loading ? (
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="bg-white dark:bg-night-card rounded-2xl border border-slate-100 dark:border-night-border p-5">
+            <div key={i} className="bg-white/90 dark:bg-night-card/90 backdrop-blur-sm rounded-2xl border border-slate-100 dark:border-night-border p-5">
               <div className="skeleton h-5 w-3/4 rounded mb-2" />
               <div className="skeleton h-4 w-1/2 rounded" />
             </div>
@@ -112,7 +112,7 @@ export default function NoticeList() {
             return (
               <div
                 key={n.id}
-                className="bg-white dark:bg-night-card rounded-2xl border border-slate-100 dark:border-night-border shadow-card p-5 hover:shadow-md hover:-translate-y-0.5 transition-all"
+                className="bg-white/90 dark:bg-night-card/90 backdrop-blur-sm rounded-2xl border border-slate-100 dark:border-night-border shadow-card p-5 hover:shadow-md hover:-translate-y-0.5 transition-all"
               >
                 <div className="flex items-start justify-between gap-3 mb-2">
                   <div className="flex items-start gap-2.5 flex-1 min-w-0">

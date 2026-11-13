@@ -14,7 +14,7 @@ export default function ContextBar({ course, semester, courses, onChange }: Prop
   const courseLabel = courses.find((c) => c.id === course)?.label || course;
 
   return (
-    <div className="bg-white dark:bg-night-card border-b border-slate-200 dark:border-night-border">
+    <div className="bg-white/80 dark:bg-night-card/80 backdrop-blur-md border-b border-slate-200/80 dark:border-night-border transition-colors">
       <div className="max-w-[1600px] mx-auto px-4 md:px-8 xl:px-12 py-3">
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-night-muted">

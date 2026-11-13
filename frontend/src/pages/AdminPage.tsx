@@ -231,7 +231,7 @@ export default function AdminPage() {
             </div>
           </>
         ) : (
-          <div className="bg-white dark:bg-night-card rounded-2xl border border-slate-200 dark:border-night-border shadow-card p-6 animate-fade-in mb-8">
+          <div className="bg-white/90 dark:bg-night-card/90 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-night-border shadow-card p-6 animate-fade-in mb-8">
             {/* Panel Header */}
             <div className="flex items-center justify-between pb-4 mb-5 border-b border-slate-100 dark:border-night-border">
               <div className="flex items-center gap-2.5">
@@ -621,7 +621,7 @@ function StatsRow({
             key={label}
             type="button"
             onClick={() => onSelectTab(id)}
-            className={`bg-white dark:bg-night-card rounded-2xl border shadow-card p-4 text-left cursor-pointer transition-all hover:-translate-y-0.5 active:scale-[0.98] ${
+            className={`bg-white/90 dark:bg-night-card/90 backdrop-blur-sm rounded-2xl border shadow-card p-4 text-left cursor-pointer transition-all hover:-translate-y-0.5 active:scale-[0.98] ${
               isActive
                 ? "border-sky-400 dark:border-sky-500 ring-2 ring-sky-400/20 dark:ring-sky-500/20"
                 : "border-slate-200 dark:border-night-border hover:border-slate-300 dark:hover:border-slate-700"

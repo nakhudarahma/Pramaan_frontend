@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { LogOut, Moon, Sun } from "lucide-react";
+import { LogOut, Moon, Sun, ShieldCheck } from "lucide-react";
 import { useTheme } from "../useTheme";
 import { clearSession, getSession } from "../session";
 import Avatar from "./Avatar";
@@ -48,10 +48,10 @@ export default function TopNav() {
   };
 
   return (
-    <header className="gradient-primary sticky top-0 z-30 bg-navy-600 border-b border-navy-700">
+    <header className="sticky top-0 z-30 bg-white/85 dark:bg-navy-700 backdrop-blur-md border-b border-slate-200/80 dark:border-navy-800 transition-colors">
       <div className="max-w-[1600px] mx-auto px-4 md:px-8 xl:px-12 h-14 flex items-center justify-between">
         <div className="flex items-center gap-2.5 min-w-0 mr-3">
-          {session && (
+          {session ? (
             <div className="relative flex-shrink-0" ref={menuRef}>
               <button
                 type="button"
@@ -59,7 +59,7 @@ export default function TopNav() {
                 aria-label="Open account menu"
                 aria-haspopup="menu"
                 aria-expanded={menuOpen}
-                className="flex h-9 w-9 items-center justify-center rounded-full ring-2 ring-white/20 hover:ring-white/40 transition-all"
+                className="flex h-9 w-9 items-center justify-center rounded-full ring-2 ring-slate-200 dark:ring-white/20 hover:ring-slate-300 dark:hover:ring-white/40 transition-all"
               >
                 <Avatar name={session.name} picture={session.picture} size="sm" />
               </button>
@@ -105,12 +105,16 @@ export default function TopNav() {
                 </div>
               )}
             </div>
+          ) : (
+            <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-sky-50 dark:bg-white/10">
+              <ShieldCheck className="h-5 w-5 text-sky-600 dark:text-accent" strokeWidth={2.5} />
+            </div>
           )}
 
           <Link to="/" className="flex items-center gap-2 min-w-0">
-            <span className="font-bold text-white text-[15px] flex-shrink-0">Pramaan</span>
+            <span className="font-bold text-slate-900 dark:text-white text-[15px] flex-shrink-0">Pramaan</span>
             <span
-              className="hidden md:inline text-[11px] text-white/60 truncate"
+              className="hidden md:inline text-[11px] text-slate-500 dark:text-white/60 truncate"
               title="B. K. Birla College (Empowered Autonomous Status), Kalyan"
             >
               B. K. Birla College (Empowered Autonomous Status), Kalyan
@@ -124,8 +128,8 @@ export default function TopNav() {
               to="/notices"
               className={`hidden md:inline-flex text-xs font-medium px-3 py-1.5 rounded-lg transition-colors ${
                 isNotices
-                  ? "bg-white/10 text-accent font-semibold"
-                  : "text-sky-100/80 hover:text-white hover:bg-white/10"
+                  ? "bg-navy-600 text-white dark:bg-white/10 dark:text-accent font-semibold shadow-sm"
+                  : "text-slate-600 hover:text-navy-900 hover:bg-slate-100 dark:text-sky-100/80 dark:hover:text-white dark:hover:bg-white/10"
               }`}
             >
               Notices
@@ -136,12 +140,12 @@ export default function TopNav() {
             onClick={toggleTheme}
             aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
             title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-            className="w-8 h-8 flex items-center justify-center rounded-lg text-sky-100/80 hover:text-white hover:bg-white/10 transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-600 hover:text-navy-900 hover:bg-slate-100 dark:text-sky-100/80 dark:hover:text-white dark:hover:bg-white/10 transition-colors"
           >
             {theme === "dark" ? (
-              <Sun className="w-4 h-4" />
+              <Sun className="theme-icon w-4 h-4" />
             ) : (
-              <Moon className="w-4 h-4" />
+              <Moon className="theme-icon w-4 h-4" />
             )}
           </button>
         </div>

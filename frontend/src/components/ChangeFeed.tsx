@@ -50,7 +50,7 @@ export default function ChangeFeed({ changes, loading, onSource }: Props) {
           {changes.map((c) => (
             <div
               key={c.id}
-              className="bg-white dark:bg-night-card rounded-2xl border border-slate-100 dark:border-night-border shadow-card p-5 animate-slide-up"
+              className="student-card bg-white/90 dark:bg-night-card/90 backdrop-blur-sm rounded-2xl border border-slate-100 dark:border-night-border shadow-card p-5"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
@@ -59,11 +59,11 @@ export default function ChangeFeed({ changes, loading, onSource }: Props) {
                       {c.label}
                     </span>
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[15px] text-slate-500 dark:text-night-muted line-through">
+                      <span className="change-old text-[15px] text-slate-500 dark:text-night-muted">
                         {c.oldValue}
                       </span>
                       <ArrowRight className="w-3 h-3 text-slate-500 dark:text-night-muted" />
-                      <span className="text-[15px] font-bold text-sky-600 dark:text-sky-400">
+                      <span className="change-new text-[15px] font-bold text-sky-600 dark:text-sky-400">
                         {c.newValue}
                       </span>
                     </div>

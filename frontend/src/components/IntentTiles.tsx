@@ -34,14 +34,14 @@ export default function IntentTiles({ onAsk }: Props) {
                 setSelected(tile.label);
                 onAsk(tile.question);
               }}
-              className={`flex h-full min-w-0 flex-col items-center gap-1.5 rounded-2xl border shadow-card p-2 sm:p-3.5 transition-all hover:-translate-y-0.5 hover:shadow-md active:scale-95 ${
+              className={`quick-topic student-card flex h-full min-w-0 flex-col items-center gap-1.5 rounded-2xl border shadow-card p-2 sm:p-3.5 ${
                 selected === tile.label
                   ? "border-navy-600 bg-sky-50 dark:border-sky-400 dark:bg-sky-400/10"
-                  : "bg-white dark:bg-night-card border-slate-100 dark:border-night-border hover:border-sky-300 dark:hover:border-sky-500 hover:shadow-md"
+                  : "bg-white/90 dark:bg-night-card/90 backdrop-blur-sm border-slate-100 dark:border-night-border hover:border-sky-300 dark:hover:border-sky-500"
               }`}
             >
               <div
-                className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center ${
+                className={`quick-icon w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center ${
                   selected === tile.label ? "bg-white dark:bg-sky-400/15" : "bg-sky-50 dark:bg-sky-400/10"
                 }`}
               >
